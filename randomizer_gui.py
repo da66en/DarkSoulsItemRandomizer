@@ -27,10 +27,10 @@ MAX_SEED_LENGTH = 64
 
 VERSION_NUM = "0.5.1"
 
-PTDE_GAMEPARAM_PATH_LIST = ["./GameParam.parambnd", "./param/GameParam/GameParam.parambnd"]
+PTDE_GAMEPARAM_PATH_LIST = ["./GameParam.parambnd", "./param/GameParam/GameParam.parambnd", "C:\Program Files (x86)\Steam\steamapps\common\Dark Souls Prepare to Die Edition\DATA\param\GameParam\GameParam.parambnd"]
 DS1R_GAMEPARAM_PATH_LIST = ["./GameParam.parambnd.dcx", "./param/GameParam/GameParam.parambnd.dcx", "D:\SteamLibrary\steamapps\common\DARK SOULS REMASTERED\param\GameParam\GameParam.parambnd.dcx", "D:\Program Files (x86)\Steam\steamapps\common\DARK SOULS REMASTERED\param\GameParam\GameParam.parambnd.dcx"]
 
-PTDE_ENGMENU_PATH_LIST = ["./msg/ENGLISH/menu.msgbnd"]
+PTDE_ENGMENU_PATH_LIST = ["./msg/ENGLISH/menu.msgbnd", "C:\Program Files (x86)\Steam\steamapps\common\Dark Souls Prepare to Die Edition\DATA\msg\ENGLISH\menu.msgbnd"]
 DS1R_ENGMENU_PATH_LIST = ["./msg/ENGLISH/menu.msgbnd.dcx", "D:\SteamLibrary\steamapps\common\DARK SOULS REMASTERED\msg\ENGLISH\menu.msgbnd.dcx", "D:\Program Files (x86)\Steam\steamapps\common\DARK SOULS REMASTERED\msg\ENGLISH\menu.msgbnd.dcx"]
 
 DESC_DICT = {
@@ -661,29 +661,30 @@ class MainGUI:
             
             # open our menu text file
             # TODO: Consolidate this instead of duplicating
-            with open(enmenu_filepath, "rb") as f:
-                enmenu_content = f.read()
-            try:
-                if is_remastered:
-                    if not dcx_handler.appears_dcx(enmenu_content):
-                        raise ValueError(".dcx file does not appear to be DCX-compressed.")
-                    enmenu_content = dcx_handler.uncompress_dcx_content(enmenu_content)
-                enmenu_content_list = bnd_rebuilder.unpack_bnd(enmenu_content)
-            except:
-                self.msg_area.config(state="normal")
-                self.msg_area.delete(1.0, "end")
-                self.msg_area.insert("end", "\n\n")
-                self.msg_area.insert("end", "ERROR", "error_red")
-                self.msg_area.insert("end", 
-                 ": " + enmenu_filename + " is malformed or corrupted and cannot be" + 
-                 " parsed to inject hints. If possible, restore " + enmenu_filename + " from a backup copy.\n\n" +
-                 "Click \"Continue\" to continue in seed-information-only mode, or" + 
-                 " click \"Quit\" to exit.")
-                self.msg_area.tag_config("error_red", foreground="red")
-                self.msg_area.config(state="disabled")
-                self.export_button.config(state = "disabled")
-                self.lift_msg_area()
-                return
+            if is_remastered:
+                with open(enmenu_filepath, "rb") as f:
+                    enmenu_content = f.read()
+                try:
+                    if is_remastered:
+                        if not dcx_handler.appears_dcx(enmenu_content):
+                            raise ValueError(".dcx file does not appear to be DCX-compressed.")
+                        enmenu_content = dcx_handler.uncompress_dcx_content(enmenu_content)
+                    enmenu_content_list = bnd_rebuilder.unpack_bnd(enmenu_content)
+                except:
+                    self.msg_area.config(state="normal")
+                    self.msg_area.delete(1.0, "end")
+                    self.msg_area.insert("end", "\n\n")
+                    self.msg_area.insert("end", "ERROR", "error_red")
+                    self.msg_area.insert("end", 
+                    ": " + enmenu_filename + " is malformed or corrupted and cannot be" + 
+                    " parsed to inject hints. If possible, restore " + enmenu_filename + " from a backup copy.\n\n" +
+                    "Click \"Continue\" to continue in seed-information-only mode, or" + 
+                    " click \"Quit\" to exit.")
+                    self.msg_area.tag_config("error_red", foreground="red")
+                    self.msg_area.config(state="disabled")
+                    self.export_button.config(state = "disabled")
+                    self.lift_msg_area()
+                    return
             
             # Back up GameParam.parambnd if needed.
             if not os.path.isfile(gameparambak_filepath):
@@ -738,17 +739,18 @@ class MainGUI:
                 f.write(new_content)
             
             # Write out our menu text if we need to
-            if self.set_up_hints.get():
-                for index, (file_id, filepath, filedata) in enumerate(enmenu_content_list):
-                    if (filepath == "N:\FRPG\data\Msg\Data_ENGLISH\Blood_writing_.fmg"):
-                        fmgData = FMGHandler(FMGHandler.load_from_file_content(filedata))
-                        item_table.hint_builder.AddHintsToBloodMessages(fmgData, rng)
-                        enmenu_content_list[index] = (file_id, filepath, fmgData.export_as_binary())
-                new_content = bnd_rebuilder.repack_bnd(enmenu_content_list)
-                if is_remastered:
-                    new_content = dcx_handler.compress_dcx_content(new_content)
-                with open(enmenu_filepath, "wb") as f:
-                    f.write(new_content)            
+            if is_remastered:
+                if self.set_up_hints.get():
+                    for index, (file_id, filepath, filedata) in enumerate(enmenu_content_list):
+                        if (filepath == "N:\FRPG\data\Msg\Data_ENGLISH\Blood_writing_.fmg"):
+                            fmgData = FMGHandler(FMGHandler.load_from_file_content(filedata))
+                            item_table.hint_builder.AddHintsToBloodMessages(fmgData, rng)
+                            enmenu_content_list[index] = (file_id, filepath, fmgData.export_as_binary())
+                    new_content = bnd_rebuilder.repack_bnd(enmenu_content_list)
+                    if is_remastered:
+                        new_content = dcx_handler.compress_dcx_content(new_content)
+                    with open(enmenu_filepath, "wb") as f:
+                        f.write(new_content)            
             
             seed_folder = self.export_seed_info((options, randomized_data, rng))
                 
