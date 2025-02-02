@@ -403,3 +403,7 @@ Anor Londo|"Try Projectile"|Right inside the door in the Chamber of the Princess
 Valley of Drakes|"Ring Ahead"|Before the bridge with the wyverns, approaching from the Darkroot elevator.|
 Demon Ruins|"Safe Zone Ahead"|In Centipede Demon room, to the right on approach to patch of ground out of the lava.|
 Crystal Cave|"Path Ahead"|On the first invisible bridge.|
+
+**For Developers**
+
+Generating executable: `pyinstaller randomizer_gui.py --onefile -i favicon.ico --add-data "favicon.gif;." --noconsole --name "DarkSoulsItemRandomizer"`
