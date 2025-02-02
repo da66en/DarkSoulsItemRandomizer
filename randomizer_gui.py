@@ -599,6 +599,7 @@ class MainGUI:
         CHEATSHEET_FILEPATH = os.path.join(new_dirpath, "cheatsheet.txt")
         HINTSHEET_FILEPATH = os.path.join(new_dirpath, "hintsheet.txt")
         SEEDINFO_FILEPATH = os.path.join(new_dirpath, "seed_info.txt")
+        HINTDEBUG_FILEPATH = os.path.join(new_dirpath, "hint_debug.txt")
         
         with open(ITEMLOT_FILEPATH, 'wb') as f:
             f.write(ilp_binary_export)
@@ -612,6 +613,9 @@ class MainGUI:
             f.write(hint_string)
         with open(SEEDINFO_FILEPATH, 'w') as f:
             f.write(seed_info)
+
+        if (self.set_up_hints.get()):
+            table.hint_builder.WriteDebugFile(HINTDEBUG_FILEPATH)
             
         if not use_randomized_data:
             self.msg_continue_button.lower()
