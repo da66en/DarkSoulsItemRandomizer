@@ -1,6 +1,8 @@
-venv
+*.pyc
+*.swp
+build/
+dist/*
+.vscode/
+dev_tools/
 __pycache__
 .idea
-dist/*
-build/*
-DarkSoulsItemRandomizer.spec

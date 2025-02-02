@@ -10,6 +10,8 @@ import shop_lineup_param as slp
 
 import itertools
 
+import hint_setup
+
 class ItemTable:
     def __init__(self, location_dict = None, shop_dict = None):
         if location_dict == None:
@@ -20,6 +22,7 @@ class ItemTable:
         self.location_dict = location_dict
         self.shop_dict = shop_dict
         self.key_locs = {}
+        self.hint_builder = hint_setup.HintBuilder()
         
         for loc_id in location_dict:
             if location_dict[loc_id].location_id != loc_id:
@@ -40,6 +43,7 @@ class ItemTable:
              " cannot accept proposed itemlotpart due to size.")
         else:
             self.table[loc_id] += [itemlotpart] + [item_list[i] for i in itemlotpart.follow_items]
+            self.hint_builder.AddItemOrLocationToHintBuilder(itemlotpart, loc_id)
         if price != None:
             for linkloc_id in [loc_id] + self.location_dict[loc_id].linked_locations:
                 if linkloc_id in self.shop_dict:
@@ -429,7 +433,7 @@ class ItemTable:
             "very_large_ember": "Very Large Ember", 
             "large_magic_ember": "Large Magic Ember", 
             "crystal_ember": "Crystal Ember",
-            "cast_light": "Cast Light",
+            "sunlight_maggot": "Sunlight Maggot",
             "lord_soul_shard_seath": "Bequeathed Lord Soul Shard (Seath)", 
             "lord_soul_shard_four_kings": "Bequeathed Lord Soul Shard (Four Kings)", 
             "lord_soul_bed_of_chaos": "Lord Soul (Bed of Chaos)", 

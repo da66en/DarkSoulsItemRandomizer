@@ -203,7 +203,7 @@ DEFAULT_SHOP_DATA = {
  
  # Modify the Sorcerer's Catalyst that Rickert sells to have a
  #  high price, so that it is a last resort.
- 60002102: ShopData(2102, cost = 500000),
+ 60002102: ShopData(2102, cost = 125000),
  
  60002200: ShopData(2200, cost = 2000),
  60002201: ShopData(2201, cost = 2000),

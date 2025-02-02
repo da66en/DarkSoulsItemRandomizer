@@ -56,10 +56,17 @@ Fashion Souls: If active, the many armor sets in game are split up, and each pie
 Laundromat Mixup: If active, most human NPCs will wear random armor instead of their usual sets. If Fashion Souls is not active, NPCs will wear randomly chosen full sets of armor. 
 If Fashion Souls is active, NPCs will wear independently chosen random pieces of armor.
 
-Senile Gwynevere: If active, the Lordvessel will be shuffled like other key items, and Gwynevere will give the player a different item in place of the Lordvessel. Not compatible with not shuffling keys.
+Lordvessel Randomized: If active, the Lordvessel will be shuffled like other key items, and Gwynevere will give the player a different item in place of the Lordvessel. Not compatible with not shuffling keys.
+
+Lordvessel @ Firelink: If active, the Lordvessel will always be in Firelink Shrine.  This can drastically cut down game time length.  Not compatible with not shuffling keys.
 
 Senile Primordial Serpents: If active, the four Lord Souls will be shuffled like other key items. Not compatible with not shuffling keys.
 
+Eager Smiths: If active, weapons capable of upgrading along the various ember paths (Chaos, Magic, Divine, etc.) have a 25% chance of dropping as a +0 version of one of these paths. A bit of an easier setting, but will allow for more diversity of viable weapons across playthroughs.
+
+No DLC: If active, key items will NOT be in Painted World or Artorias of the Abyss DLC locations.  Also keys needed for those areas will not be placed outside of these areas, to prevent you from getting keys in sections that aren't needed.
+
+Seek Guidance Help: If active, useful hints replace the dev messages that appear when using Seek Guidance.
 
 **Race Mode Possible Key Locations**:
 
@@ -349,6 +356,53 @@ Senile Primordial Serpents: If active, the four Lord Souls will be shuffled like
     - Force Quit Wrong Warp is *not* generally required, but may be
        useful to escape from certain softlocks and avoid the need for
        some keys.
+
+**Seek Guidance help:**
+
+*The hint rules are as follows:*
+
+take 2 of the big key hints and put them in twice (4 slots)  
+take 6 of the key hints, and put them in twice (12 slots, 16 total)  
+take 4 of the useful items, put them in (4 slots, 20 total)  
+take 6 of the useful locations, put them in (6 slots, 26 total)  
+take 3 trash hints, shuffle them in twice (6 slots, 32 total)  
+
+*Hint Locations:*
+
+Area|Original Text|Location|
+---|---|---|
+Undead Asylum|"Exchange"|Near Snuggly, in the large bird nest to the right as you exit the Asylum.|
+Firelink Shrine|"Path ahead"|Drop off point from the elevator, before the path to the egg-nest above the old shrine.|
+Firelink Shrine|"Here!"|At the base of the flying buttress, reached by jumping/rolling, on the path to the egg-nest.|
+Undead Burg|"Imminent Merchant"|Under the aqueduct, in front of Domhall of Zena once he relocates there from the Depths.|
+Undead Burg|"Imminent drake..."|At the start of the Hellkite bridge, beside basement door.|
+Undead Burg|"Jumping off ahead"|Before barrels where two Hollows hanging from railing climb up to ambush.|
+Undead Burg|"Prisoner ahead"|In front of the house where Griggs of Vinheim is trapped in Lower Undead Burg.|
+Undead Parish|"Prisoner ahead"|Inside Undead Church, in the upper doorway towards Lautrec's cell.|
+Undead Parish|"Blacksmith ahead"|On the start of the bridge towards the old church, where Andre of Astora is located.|
+Darkroot Garden|"Follow the shining flowers"|Right outside the exit from the old church, before entering the garden.|
+Darkroot Garden|"Are the trees moving?"|Past the first living/killable tree on the right side of the Moonlight Butterfly area.|
+Depths|"I can't take this"|Inside the bonfire chamber.|
+Depths|"Try sliding down"|In Giant Rat chamber, on far left side next to top of waterfall.|
+Depths|"Imminent shortcut"|Before the shortcut.|
+Depths|"Weakness: Head"|In Gaping Dragon boss area, near pillars on left side.|
+Blighttown|"Path Ahead"|Near first bonfire, on approach to nearby fire hounds.|
+Quelaag's Domain|"Illusory Wall"|Just before illusory wall leading to Chaos Servant covenant, below Second Bell of Awakening.|
+The Catacombs|"Try divine"|Right below the first ladder in the Catacombs.|
+The Catacombs|"Treasure"|Near weak looking and breakable brick wall.|
+The Catacombs|"Blacksmith ahead"|In the wheel skeleton pit, right outside the entrance to Vamos.|
+The Catacombs|"Liar"|Near Patches at his bridge turning switch location.|
+The Catacombs|"Up"|At the base of the ladder, along the path from the tomb where the Darkmoon Seance Ring is found.|
+The Catacombs|"Shortcut ahead"|Right after Pinwheel, on the route to the drop leading back to the Catacombs|
+New Londo Ruins|"Need Curses"|Right before the rickety bridge that leads to the old city.|
+New Londo Ruins|"Imminent jumping off ..."|At bottom of broken stairs, outside building holding Sealer.|
+New Londo Ruins|"Need Covenant"|Outcrop at bottom of staircase leading to Abyss/Four Kings.|
+Sen's Fortress|"Prisoner ahead"|In front of breakable wall where Big Hat Logan is kept.|
+Anor Londo|"Path ahead"|At the base of the flying buttress leading to the upper floor of the church with the painting.|
+Anor Londo|"Try Projectile"|Right inside the door in the Chamber of the Princess.|
+Valley of Drakes|"Ring Ahead"|Before the bridge with the wyverns, approaching from the Darkroot elevator.|
+Demon Ruins|"Safe Zone Ahead"|In Centipede Demon room, to the right on approach to patch of ground out of the lava.|
+Crystal Cave|"Path Ahead"|On the first invisible bridge.|
 
 **For Developers**
 
