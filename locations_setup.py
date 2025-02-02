@@ -108,6 +108,13 @@ class Location:
         self.has_flag = has_flag
         self.has_cumul_flag = has_cumul_flag
         self.default_key = default_key
+        self.is_dlc = (area == AREA.KALAMEET_FIGHT or
+            area == AREA.OOLACILE_HIDDEN or
+            area == AREA.OOLACILE_SANCTUARY or 
+            area == AREA.OOLACILE_TOWNSHIP or
+            area == AREA.PAINTED_WORLD or
+            area == AREA.PAINTED_WORLD_ANNEX or
+            area == AREA.ROYAL_WOOD)
             
 LOCATIONS = {
  0: Location(LOC_DIF.IGNORE, AREA.NONE, 1),
@@ -1066,7 +1073,7 @@ LOCATIONS = {
  34720010: Location(LOC_DIF.HARD, AREA.OOLACILE_SANCTUARY, 9, is_transient = True),
  34720020: Location(LOC_DIF.HARD, AREA.OOLACILE_SANCTUARY, 9, is_transient = True),
  34800000: Location(LOC_DIF.NPC_MEDIUM, AREA.NPC_RNG_DROP, 9, is_transient = True),
- 34800100: Location(LOC_DIF.HARD, AREA.LOST_IZALITH, 9, is_transient = True),
+ 34800100: Location(LOC_DIF.HARD, AREA.LOST_IZALITH, 9, is_transient = True, default_key = "sunlight_maggot"),
  34900000: Location(LOC_DIF.LEAVE_ALONE, AREA.MOVING_NPC, 9, is_transient = True),
  34900100: Location(LOC_DIF.LEAVE_ALONE, AREA.MOVING_NPC, 9, is_transient = True),
  34900200: Location(LOC_DIF.LEAVE_ALONE, AREA.MOVING_NPC, 9, is_transient = True),
@@ -1357,7 +1364,7 @@ LOCATIONS = {
  60002102: Location(LOC_DIF.LEAVE_ALONE, AREA.NEW_LONDO_PRE_SEAL, 1, is_transient = True),
  60002200: Location(LOC_DIF.EASY, AREA.MOVING_NPC, 1, is_transient = True, linked_locations = [60006502]),
  60002201: Location(LOC_DIF.EASY, AREA.MOVING_NPC, 1, is_transient = True, linked_locations = [60006503]),
- 60002202: Location(LOC_DIF.EASY, AREA.MOVING_NPC, 1, is_transient = True, linked_locations = [60006504], default_key = "cast_light"),
+ 60002202: Location(LOC_DIF.EASY, AREA.MOVING_NPC, 1, is_transient = True, linked_locations = [60006504]),
  60002203: Location(LOC_DIF.MEDIUM, AREA.MOVING_NPC, 1, is_transient = True, linked_locations = [60006505]),
  60002204: Location(LOC_DIF.MEDIUM, AREA.MOVING_NPC, 1, is_transient = True, linked_locations = [60006506]),
  60002205: Location(LOC_DIF.MEDIUM, AREA.MOVING_NPC, 1, is_transient = True),

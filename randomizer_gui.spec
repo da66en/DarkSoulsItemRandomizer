@@ -4,7 +4,7 @@ block_cipher = None
 
 
 a = Analysis(['randomizer_gui.py'],
-             pathex=['C:\\Users\\ekrechmer\\DarkSoulsItemRandomizer'],
+             pathex=['C:\\Darren.Mini\\Darren\\ds_rando'],
              binaries=[],
              datas=[('favicon.ico', '.'), ('favicon.gif', '.')],
              hiddenimports=[],

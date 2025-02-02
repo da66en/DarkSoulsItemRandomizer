@@ -1,3 +1,7 @@
+# TODO: is lightning spear, great lightening spear and sunlight spear being shuffled in?
+# TODO: don't let sunlight_maggot be tomb of giants
+# TODO: add option to remove black knight weapons
+
 import tkinter as tk
 import tkinter.ttk as ttk
 from tkinter import messagebox as tkMB
@@ -25,13 +29,13 @@ INI_FILE = "randomizer.ini"
 
 MAX_SEED_LENGTH = 64
 
-VERSION_NUM = "0.5.1"
+VERSION_NUM = "0.6.3"
 
-PTDE_GAMEPARAM_PATH_LIST = ["./GameParam.parambnd", "./param/GameParam/GameParam.parambnd", "C:\Program Files (x86)\Steam\steamapps\common\Dark Souls Prepare to Die Edition\DATA\param\GameParam\GameParam.parambnd"]
-DS1R_GAMEPARAM_PATH_LIST = ["./GameParam.parambnd.dcx", "./param/GameParam/GameParam.parambnd.dcx", "D:\SteamLibrary\steamapps\common\DARK SOULS REMASTERED\param\GameParam\GameParam.parambnd.dcx", "D:\Program Files (x86)\Steam\steamapps\common\DARK SOULS REMASTERED\param\GameParam\GameParam.parambnd.dcx"]
+PTDE_GAMEPARAM_PATH_LIST = ["./GameParam.parambnd", "./param/GameParam/GameParam.parambnd", "C:\Program Files (x86)\Steam\steamapps\common\Dark Souls Prepare to Die Edition\DATA\param\GameParam\GameParam.parambnd", "C:\Programs\Steam\steamapps\common\Dark Souls Prepare to Die Edition\DATA\param\GameParam\GameParam.parambnd"]
+DS1R_GAMEPARAM_PATH_LIST = ["./GameParam.parambnd.dcx", "./param/GameParam/GameParam.parambnd.dcx", "D:\SteamLibrary\steamapps\common\DARK SOULS REMASTERED\param\GameParam\GameParam.parambnd.dcx", "D:\Program Files (x86)\Steam\steamapps\common\DARK SOULS REMASTERED\param\GameParam\GameParam.parambnd.dcx", "C:\programs\Steam\steamapps\common\DARK SOULS REMASTERED\param\GameParam\GameParam.parambnd.dcx"]
 
-PTDE_ENGMENU_PATH_LIST = ["./msg/ENGLISH/menu.msgbnd", "C:\Program Files (x86)\Steam\steamapps\common\Dark Souls Prepare to Die Edition\DATA\msg\ENGLISH\menu.msgbnd"]
-DS1R_ENGMENU_PATH_LIST = ["./msg/ENGLISH/menu.msgbnd.dcx", "D:\SteamLibrary\steamapps\common\DARK SOULS REMASTERED\msg\ENGLISH\menu.msgbnd.dcx", "D:\Program Files (x86)\Steam\steamapps\common\DARK SOULS REMASTERED\msg\ENGLISH\menu.msgbnd.dcx"]
+PTDE_ENGMENU_PATH_LIST = ["./msg/ENGLISH/menu.msgbnd", "C:\Program Files (x86)\Steam\steamapps\common\Dark Souls Prepare to Die Edition\DATA\msg\ENGLISH\menu.msgbnd", "C:\Programs\Steam\steamapps\common\Dark Souls Prepare to Die Edition\DATA\msg\ENGLISH\menu.msgbnd"]
+DS1R_ENGMENU_PATH_LIST = ["./msg/ENGLISH/menu.msgbnd.dcx", "D:\SteamLibrary\steamapps\common\DARK SOULS REMASTERED\msg\ENGLISH\menu.msgbnd.dcx", "D:\Program Files (x86)\Steam\steamapps\common\DARK SOULS REMASTERED\msg\ENGLISH\menu.msgbnd.dcx", "C:\Programs\Steam\steamapps\common\DARK SOULS REMASTERED\msg\ENGLISH\menu.msgbnd.dcx"]
 
 DESC_DICT = {
     "diff": {rngopts.RandOptDifficulty.EASY: "* Perfectly fair. Items have an equal chance to be placed anywhere.\n", 
@@ -51,9 +55,9 @@ DESC_DICT = {
             "* Key items are shuffled but can be placed only in certain locations.\n" +
             "  May require skips and glitches to complete. SOFTLOCKING IS POSSIBLE.\n" +
             "  See README for list of locations to check. Read this list ahead of time.\n")},
-    "souls_diff": {rngopts.RandOptSoulItemsDifficulty.SHUFFLE: "* Soul items are shuffled into the item pool like other items.\n\n",
-        rngopts.RandOptSoulItemsDifficulty.CONSUMABLE: "* Lesser soul items are replaced with a random consumable before shuffling.\n\n",
-        rngopts.RandOptSoulItemsDifficulty.TRANSPOSE:  "* Boss souls have a 75% chance to be transposed to one of their boss items.\n\n"},
+    "souls_diff": {rngopts.RandOptSoulItemsDifficulty.SHUFFLE: "* Soul items are shuffled into the item pool like other items.\n",
+        rngopts.RandOptSoulItemsDifficulty.CONSUMABLE: "* Lesser soul items are replaced with a random consumable before shuffling.\n",
+        rngopts.RandOptSoulItemsDifficulty.TRANSPOSE:  "* Boss souls have a 75% chance to be transposed to one of their boss items.\n"},
     "start_items": {rngopts.RandOptStartItemsDifficulty.SHIELD_AND_1H: ("* Player starts with random class-usable (L) shield & (R) weapon.\n" + 
             "  The weapon is usable one-handed with base stats.\n"),
         rngopts.RandOptStartItemsDifficulty.SHIELD_AND_2H: ("* Player starts with random class-usable (L) shield & (R) weapon.\n" + 
@@ -64,16 +68,19 @@ DESC_DICT = {
         False: "* Armor sets ARE kept together during shuffling.\n   Players will be able to find full sets of armor at once.\n"},
     "npc_armor": {True: "* NPCs wear randomly chosen armor instead of their normal sets.\n   If Fashion Souls is on, NPCs will also mix-and-match their armor.\n\n",
         False: "* NPCs will wear their normal sets of armor.\n   NPCs have their familiar look, weight class and defense stats.\n\n"},
-    "use_lv": {True: "* The Lordvessel IS included in the randomized keys.\n   Difficulty ranges from much easier (in Firelink) to harder (in TotG).\n",
-        False: "* The Lordvessel IS NOT included in the randomized keys.\n   Difficulty is standard. Lordvessel is given by Gwynevere in Anor Londo.\n"},
+    "use_lv": {rngopts.RandOptLordvesselLocation.RANDOMIZED: "* The Lordvessel IS included in the randomized keys.\n   Difficulty ranges from much easier (in Firelink) to harder (in TotG).\n",
+        rngopts.RandOptLordvesselLocation.GWYNEVERE: "* The Lordvessel IS NOT included in the randomized keys.\n   Difficulty is standard. Lordvessel is given by Gwynevere in Anor Londo.\n",
+        rngopts.RandOptLordvesselLocation.FIRELINK: "* The Lordvessel is at Firelink Shrine.\n   Difficulty is easy.\n"},
     "use_lord_souls": {True: "* The 4 Lord Souls ARE included in the randomized keys.\n   Difficulty ranges from much easier to much harder.\n", 
         False: "* The 4 Lord Souls ARE NOT included in the randomized keys.\n   Difficulty is standard. Lord Souls are dropped by their normal bosses.\n"},
     "ascend_weapons": {True: "* Normal weapons have a 25% chance to be ascended with a random ember.\n\n",
         False: "* Normal weapons drop as expected.\n\n"},
     "set_up_hints": {True: "* The dev messages visibile with Seek Guidance will have \n   hints automatically added in.", 
-        False: "* There are no hints that are added to the seed via Seek Guidance."}
+        False: "* There are no hints that are added to the seed via Seek Guidance."},
+    "keys_not_in_dlc": {True: "* Key items will NOT be in DLC (Painted World, Artorias of the Abyss).\n\n",
+        False: "* Key items can be in DLC (Painted World, Artorias of the Abyss).\n\n"}
 }
-DESC_ORDER = ["diff", "key_diff", "souls_diff", "start_items", "fashion", "npc_armor", "use_lv", "use_lord_souls", "ascend_weapons", "set_up_hints"]
+DESC_ORDER = ["diff", "key_diff", "souls_diff", "keys_not_in_dlc", "start_items", "fashion", "npc_armor", "use_lv", "use_lord_souls", "ascend_weapons", "set_up_hints"]
 
 
 
@@ -128,13 +135,14 @@ class MainGUI:
         self.seed_entry = tk.Entry(self.root, font="TkFixedFont", textvariable=self.seed_string, width=70)
         self.entry_state = self.add_placeholder_to(self.seed_entry, 'Type a seed (or leave blank for a random seed)')
         self.seed_entry.grid(row=0, column=1, columnspan=2, ipady=2, ipadx=1, padx=2, sticky='EW')
-        tk.Label(self.root, text="Made by HotPocketRemix      ").grid(row=0, column=3, columnspan=2, sticky='E', padx=2)
-        self.sellout_button = tk.Button(self.root, text="$", bg="pale goldenrod",
+        #tk.Label(self.root, text="Made by HotPocketRemix      ").grid(row=0, column=3, columnspan=2, sticky='E', padx=2)
+        self.sellout_button = tk.Button(self.root, text="?", bg="pale goldenrod",
          padx=2, pady=2, command=self.lift_sellout_area)
         self.sellout_button.grid(row=0, column=4, padx=2, sticky='E')
         
         tk.Label(self.root, text="Dark Souls Game Version:").grid(row=1, column=0, columnspan=2, sticky='W', padx=2, ipady=1)
         self.game_version = tk.StringVar()
+        self.game_version.trace('w', lambda name, index, mode: self.update())
         self.game_version_menu = ttk.Combobox(self.root, textvariable=self.game_version, state="readonly", 
             values=[rngopts.RandOptGameVersion.PTDE, rngopts.RandOptGameVersion.REMASTERED],
             style="GameVersion.TCombobox")
@@ -185,8 +193,9 @@ class MainGUI:
         self.setup_hover_events(self.diff_rbutton2, {"diff": rngopts.RandOptDifficulty.MEDIUM})
         self.setup_hover_events(self.diff_rbutton3, {"diff": rngopts.RandOptDifficulty.HARD})
         
+        #was rowspan=4
         self.key_diff_frame = tk.LabelFrame(text="Key Placement:")
-        self.key_diff_frame.grid(row=3, column=3, rowspan=4, sticky='NS', padx=2)
+        self.key_diff_frame.grid(row=3, column=3, rowspan=5, sticky='NS', padx=2)
         self.key_diff = tk.IntVar()
         self.key_diff.set(ini_parser.get_option_value(init_options, "key_placement"))
         self.key_diff.trace('w', lambda name, index, mode: self.update())
@@ -206,13 +215,22 @@ class MainGUI:
         self.key_diff_rbutton2.grid(row=1, column=0, sticky='W')
         self.key_diff_rbutton3.grid(row=2, column=0, sticky='W')
         self.key_diff_rbutton4.grid(row=3, column=0, sticky='W')
-        self.setup_hover_events(self.key_diff_rbutton1, {"key_diff": rngopts.RandOptKeyDifficulty.LEAVE_ALONE, "use_lv": False, "use_lord_souls": False})
+        self.setup_hover_events(self.key_diff_rbutton1, {"key_diff": rngopts.RandOptKeyDifficulty.LEAVE_ALONE, "use_lv": rngopts.RandOptLordvesselLocation.get_default(), "use_lord_souls": False})
         self.setup_hover_events(self.key_diff_rbutton2, {"key_diff": rngopts.RandOptKeyDifficulty.RANDOMIZE})
         self.setup_hover_events(self.key_diff_rbutton3, {"key_diff": rngopts.RandOptKeyDifficulty.RACE_MODE})
         self.setup_hover_events(self.key_diff_rbutton4, {"key_diff": rngopts.RandOptKeyDifficulty.SPEEDRUN_MODE, "diff": rngopts.RandOptDifficulty.EASY})
-        
+        self.keys_not_in_dlc = tk.BooleanVar()
+        self.keys_not_in_dlc.set(ini_parser.get_option_value(init_options, "keys_not_in_dlc"))
+        self.keys_not_in_dlc.trace('w', lambda name, index, mode: self.update())
+        self.keys_not_in_dlc_check = tk.Checkbutton(self.key_diff_frame, text="No DLC", 
+         variable=self.keys_not_in_dlc, onvalue=True, offvalue=False,   #, padx=2,
+         width=10, anchor=tk.W)
+        self.keys_not_in_dlc_check.grid(row=4, column=0, sticky='W')
+        self.setup_hover_events(self.keys_not_in_dlc_check, {"keys_not_in_dlc": None}, no_emph = True)
+
+        # was rowspan=5 row=7
         self.soul_frame = tk.LabelFrame(text="Soul Items:")
-        self.soul_frame.grid(row=7, column=3, rowspan=5, sticky='NS', padx=2, pady=2)
+        self.soul_frame.grid(row=8, column=3, rowspan=4, sticky='NS', padx=2, pady=2)
         self.soul_diff = tk.IntVar()
         self.soul_diff.set(ini_parser.get_option_value(init_options, "soul_items_diff"))
         self.soul_diff.trace('w', lambda name, index, mode: self.update())
@@ -231,7 +249,7 @@ class MainGUI:
         self.setup_hover_events(self.soul_diff_rbutton1, {"souls_diff": rngopts.RandOptSoulItemsDifficulty.SHUFFLE})
         self.setup_hover_events(self.soul_diff_rbutton2, {"souls_diff": rngopts.RandOptSoulItemsDifficulty.CONSUMABLE})
         self.setup_hover_events(self.soul_diff_rbutton3, {"souls_diff": rngopts.RandOptSoulItemsDifficulty.TRANSPOSE})
-        
+
         self.start_items_frame = tk.LabelFrame(text="Starting Items:")
         self.start_items_frame.grid(row=2, column=4, sticky='NS', padx=2)
         self.start_items_diff = tk.IntVar()
@@ -271,18 +289,43 @@ class MainGUI:
         self.npc_armor_check.grid(row=4, column=4, sticky='W')
         self.setup_hover_events(self.npc_armor_check, {"npc_armor": None}, no_emph = True)
         
-        self.use_lordvessel = tk.BooleanVar()
-        self.use_lordvessel.set(ini_parser.get_option_value(init_options, "use_lordvessel"))
-        self.use_lordvessel.trace('w', lambda name, index, mode: self.update())
-        self.lv_check = tk.Checkbutton(self.root, text="Senile Gwynevere", 
-         variable=self.use_lordvessel, onvalue=True, offvalue=False, padx=2,
-         width=20, anchor=tk.W)
-        self.lv_check.grid(row=5, column=4, sticky='W')
-        self.setup_hover_events(self.lv_check, {"use_lv": None}, no_emph = True)
+        if False:
+            tk.Label(self.root, text="Dark Souls Game Version:").grid(row=1, column=0, columnspan=2, sticky='W', padx=2, ipady=1)
+            self.game_version = tk.StringVar()
+            self.game_version_menu = ttk.Combobox(self.root, textvariable=self.game_version, state="readonly", 
+                values=[rngopts.RandOptGameVersion.PTDE, rngopts.RandOptGameVersion.REMASTERED],
+                style="GameVersion.TCombobox")
+            self.style.map('Highlight.GameVersion.TCombobox', fieldbackground=[('readonly','light salmon')])
+            self.style.map('Error.GameVersion.TCombobox', foreground=[('readonly','red')])
+            # Clear the highlighting of the combobox after user interaction,
+            #  since it auto-highlights for some reason.
+            self.game_version_menu.bind("<<ComboboxSelected>>", lambda _: self.update_game_version())
+            self.game_version_menu.config(width=30)
+            self.game_version_menu.grid(row=1, column=2, sticky='EW', padx=2)
+
+        if False:
+            self.use_lordvessel = tk.BooleanVar()
+            self.use_lordvessel.set(ini_parser.get_option_value(init_options, "use_lordvessel"))
+            self.use_lordvessel.trace('w', lambda name, index, mode: self.update())
+            self.lv_check = tk.Checkbutton(self.root, text="Senile Gwynevere", 
+            variable=self.use_lordvessel, onvalue=True, offvalue=False, padx=2,
+            width=20, anchor=tk.W)
+            self.lv_check.grid(row=5, column=4, sticky='W')
+            self.setup_hover_events(self.lv_check, {"use_lv": None}, no_emph = True)
+        else:
+            self.use_lordvessel = tk.StringVar()
+            self.use_lordvessel.set(rngopts.RandOptLordvesselLocation.verify(ini_parser.get_option_value(init_options, "use_lordvessel")))
+            self.use_lordvessel.trace('w', lambda name, index, mode: self.update())
+            self.gui_lordvessel = ttk.Combobox(self.root, 
+                                               textvariable=self.use_lordvessel,
+                                               values=rngopts.RandOptLordvesselLocation.as_values(),
+                                               state="readonly")
+            self.gui_lordvessel.grid(row=5, column=4, sticky='W')
+            self.setup_hover_events(self.gui_lordvessel, {"use_lv": None}, no_emph = True)
         
         self.use_lord_souls = tk.BooleanVar()
         self.use_lord_souls.set(ini_parser.get_option_value(init_options, "use_lord_souls"))
-        self.use_lordvessel.trace('w', lambda name, index, mode: self.update())
+        self.use_lord_souls.trace('w', lambda name, index, mode: self.update())
         self.lord_soul_check = tk.Checkbutton(self.root, text="Senile Primordial Serpents", 
          variable=self.use_lord_souls, onvalue=True, offvalue=False, padx=2,
          width=20, anchor=tk.W)
@@ -299,13 +342,23 @@ class MainGUI:
         self.setup_hover_events(self.ascend_weapons_check, {"ascend_weapons": None}, no_emph = True)
 
         self.set_up_hints = tk.BooleanVar()
-        self.set_up_hints.set(False)
+        self.set_up_hints.set(ini_parser.get_option_value(init_options, "set_up_hints"))
         self.set_up_hints.trace('w', lambda name, index, mode: self.update())
         self.hint_check = tk.Checkbutton(self.root, text="Seek Guidance Hints", 
          variable=self.set_up_hints, onvalue=True, offvalue=False, padx=2,
          width=20, anchor=tk.W)
         self.hint_check.grid(row=8, column=4, sticky='W')
         self.setup_hover_events(self.hint_check, {"set_up_hints": None}, no_emph = True)
+
+        if False:
+            self.start_with_lordvessel = tk.BooleanVar()
+            self.start_with_lordvessel.set(ini_parser.get_option_value(init_options, "start_with_lordvessel"))
+            self.start_with_lordvessel.trace('w', lambda name, index, mode: self.update())
+            self.start_with_lordvessel_check = tk.Checkbutton(self.root, text="Lordvessel start", 
+            variable=self.start_with_lordvessel, onvalue=True, offvalue=False, padx=2,
+            width=20, anchor=tk.W)
+            self.start_with_lordvessel_check.grid(row=9, column=4, sticky='W')
+            self.setup_hover_events(self.start_with_lordvessel_check, {"start_with_lordvessel": None}, no_emph = True)
         
         self.export_button = tk.Button(self.root, text="Scramble Items &\nExport to GameParam", 
          padx=10, pady=10, command=self.export_to_gameparam)
@@ -317,12 +370,12 @@ class MainGUI:
         self.update_desc()
         self.detect_game_version()
         self.check_for_new_version()
+        self.update()
         
     def update_game_version(self):
         self.game_version_menu.selection_clear()
         if self.game_version.get() in [rngopts.RandOptGameVersion.PTDE, rngopts.RandOptGameVersion.REMASTERED]:
             self.game_version_menu.configure(style="GameVersion.TCombobox")
-        
         
     def detect_game_version(self):
         for filepath in DS1R_GAMEPARAM_PATH_LIST:
@@ -362,25 +415,24 @@ class MainGUI:
         self.msg_area.config(state="normal")
         self.msg_area.delete(1.0, "end")
         self.msg_area.insert("end", "\n\n")
-        self.msg_area.insert("end", "If you are interested in supporting the author, please consider donating at\n\n               ")
-        self.msg_area.insert("end", r"https://twitch.streamlabs.com/hotpocketremix/", "hyperlink")
-        self.msg_area.insert("end", "\n\n       Donations are not required, but are much appreciated. \`[T]/")
-        self.msg_area.tag_config("hyperlink", foreground="blue", underline=1)
-        self.msg_area.tag_bind("hyperlink", "<Enter>", lambda _: self.hyperlink_enter())
-        self.msg_area.tag_bind("hyperlink", "<Leave>", lambda _: self.hyperlink_leave())
-        self.msg_area.tag_bind("hyperlink", "<Button-1>", lambda _: self.hyperlink_click())
+        self.msg_area.insert("end", "\tDark Soul Randomizer, developers:\n\n")
+        self.msg_area.insert("end", "\t\thotpocketremix\n")
+        self.msg_area.insert("end", "\t\tcaerulius\n")
+        self.msg_area.insert("end", "\t\tforstycup\n")
+        self.msg_area.insert("end", "\t\tAbscondWithAPie\n")
+        self.msg_area.insert("end", "\t\tda66en\n")
         self.msg_area.config(state="disabled")
         self.msg_area.lift()
         self.back_button.lift()
         
-    def hyperlink_enter(self):
-        self.msg_area.config(cursor="hand2")
+    #def hyperlink_enter(self):
+    #    self.msg_area.config(cursor="hand2")
     
-    def hyperlink_leave(self):
-        self.msg_area.config(cursor="")
+    #def hyperlink_leave(self):
+    #    self.msg_area.config(cursor="")
         
-    def hyperlink_click(self):
-        webbrowser.open_new_tab(r"https://twitch.streamlabs.com/hotpocketremix/")
+    #def hyperlink_click(self):
+    #    webbrowser.open_new_tab(r"https://twitch.streamlabs.com/hotpocketremix/")
         
     def get_current_desc_state(self):
         desc_specifiers = {
@@ -394,6 +446,7 @@ class MainGUI:
             "use_lord_souls": (self.use_lord_souls.get(), DescriptionState.NORMAL),
             "ascend_weapons": (self.ascend_weapons_bool.get(), DescriptionState.NORMAL),
             "set_up_hints": (self.set_up_hints.get(), DescriptionState.NORMAL),
+            "keys_not_in_dlc": (self.keys_not_in_dlc.get(), DescriptionState.NORMAL),
         }
         return DescriptionState(desc_specifiers, self.desc_area)
         
@@ -429,7 +482,10 @@ class MainGUI:
         hover_object.bind("<Leave>", lambda _: self.update_desc(respect_current_hover = False))
         hover_object.bind("<Return>", lambda _: self.update_desc(respect_current_hover = False))
         hover_object.bind("<space>", lambda _: self.update_desc(respect_current_hover = False))
-        hover_object.configure(command = lambda: self.update_desc_for_hover(hovered_parts, no_emph))
+        try:    # Combobox doesn't have 'configure' method
+            hover_object.configure(command = lambda: self.update_desc_for_hover(hovered_parts, no_emph))
+        except:
+            pass
         
     def update_desc(self, respect_current_hover = True):
         if not (respect_current_hover and self.has_hovered_desc):
@@ -438,13 +494,19 @@ class MainGUI:
             
     def update(self):
         if self.key_diff.get() == rngopts.RandOptKeyDifficulty.LEAVE_ALONE:
-            self.use_lordvessel.set(False)
+            #self.use_lordvessel.set(False)
+            self.use_lordvessel.set(rngopts.RandOptLordvesselLocation.GWYNEVERE)
             self.use_lord_souls.set(False)
-            self.lv_check.config(state="disabled")
+            self.keys_not_in_dlc.set(False)
+            #self.lv_check.config(state="disabled")
+            self.gui_lordvessel.config(state="disabled")
             self.lord_soul_check.config(state="disabled")
+            self.keys_not_in_dlc_check.config(state="disabled")
         else:
-            self.lv_check.config(state="normal")
+            #self.lv_check.config(state="normal")
+            self.gui_lordvessel.config(state="normal")
             self.lord_soul_check.config(state="normal")
+            self.keys_not_in_dlc_check.config(state="normal")
             
         if self.key_diff.get() == rngopts.RandOptKeyDifficulty.SPEEDRUN_MODE:
             self.diff.set(rngopts.RandOptDifficulty.EASY)
@@ -455,15 +517,23 @@ class MainGUI:
             self.diff_rbutton1.config(state="normal")
             self.diff_rbutton2.config(state="normal")
             self.diff_rbutton3.config(state="normal")
+
+        # xyz
+        if self.game_version.get() == rngopts.RandOptGameVersion.REMASTERED:
+            self.hint_check.config(state="normal")
+        else:
+            self.set_up_hints.set(False)
+            self.hint_check.config(state="disabled")
         self.update_desc()
         
     def randomize_data(self, chr_init_data):
         options = rngopts.RandomizerOptions(self.diff.get(), self.fashion_bool.get(), 
          self.key_diff.get(), self.use_lordvessel.get(), self.use_lord_souls.get(), 
          self.soul_diff.get(), self.start_items_diff.get(), self.game_version.get(),
-         self.npc_armor_bool.get(), self.ascend_weapons_bool.get())
+         self.npc_armor_bool.get(), self.ascend_weapons_bool.get(), self.keys_not_in_dlc.get())
 
         if self.save_options.get():
+            options.set_up_hints = self.set_up_hints.get()
             ini_parser.save_ini(INI_FILE, options)        #save options right before creating seed
 
         rng = random.Random()
@@ -538,6 +608,7 @@ class MainGUI:
         CHEATSHEET_FILEPATH = os.path.join(new_dirpath, "cheatsheet.txt")
         HINTSHEET_FILEPATH = os.path.join(new_dirpath, "hintsheet.txt")
         SEEDINFO_FILEPATH = os.path.join(new_dirpath, "seed_info.txt")
+        HINTDEBUG_FILEPATH = os.path.join(new_dirpath, "hint_debug.txt")
         
         with open(ITEMLOT_FILEPATH, 'wb') as f:
             f.write(ilp_binary_export)
@@ -551,6 +622,9 @@ class MainGUI:
             f.write(hint_string)
         with open(SEEDINFO_FILEPATH, 'w') as f:
             f.write(seed_info)
+
+        if (self.set_up_hints.get()):
+            table.hint_builder.WriteDebugFile(HINTDEBUG_FILEPATH)
             
         if not use_randomized_data:
             self.msg_continue_button.lower()
@@ -613,7 +687,7 @@ class MainGUI:
             self.msg_area.config(state="disabled")
             self.export_button.config(state = "disabled")
             self.lift_msg_area()
-        if not has_engmenu:
+        if not has_engmenu and self.set_up_hints.get():
             self.msg_area.config(state="normal")
             self.msg_area.delete(1.0, "end")
             self.msg_area.insert("end", "\n\n")
@@ -661,7 +735,7 @@ class MainGUI:
             
             # open our menu text file
             # TODO: Consolidate this instead of duplicating
-            if is_remastered:
+            if is_remastered and self.set_up_hints.get():
                 with open(enmenu_filepath, "rb") as f:
                     enmenu_content = f.read()
                 try:
@@ -701,8 +775,8 @@ class MainGUI:
                 self.get_new_seed()
 
             for index, (file_id, filepath, filedata) in enumerate(content_list):
-                if (filepath == "N:\FRPG\data\INTERROOT_win32\param\GameParam\CharaInitParam.param" or
-                 filepath == "N:\FRPG\data\INTERROOT_x64\param\GameParam\CharaInitParam.param"):
+                if (filepath == "N:\\FRPG\\data\\INTERROOT_win32\\param\\GameParam\\CharaInitParam.param" or
+                 filepath == "N:\\FRPG\\data\\INTERROOT_x64\\param\\GameParam\\CharaInitParam.param"):
                     chr_init_data = filedata
             
             
@@ -720,17 +794,18 @@ class MainGUI:
             result_slp = item_table.build_shoplineup()
             slp_binary_export = result_slp.export_as_binary()
             cip_binary_export = randomized_chr_data.export_as_binary()
-            item_table.hint_builder.ConstructHintList(rng)
+            if self.set_up_hints.get():
+                item_table.hint_builder.ConstructHintList(rng)
             
             for index, (file_id, filepath, filedata) in enumerate(content_list):
-                if (filepath == "N:\FRPG\data\INTERROOT_win32\param\GameParam\ItemLotParam.param" or
-                 filepath == "N:\FRPG\data\INTERROOT_x64\param\GameParam\ItemLotParam.param"):
+                if (filepath == "N:\\FRPG\\data\\INTERROOT_win32\\param\\GameParam\\ItemLotParam.param" or
+                 filepath == "N:\\FRPG\\data\\INTERROOT_x64\\param\\GameParam\\ItemLotParam.param"):
                     content_list[index] = (file_id, filepath, ilp_binary_export)
-                if (filepath == "N:\FRPG\data\INTERROOT_win32\param\GameParam\ShopLineupParam.param" or
-                 filepath == "N:\FRPG\data\INTERROOT_x64\param\GameParam\ShopLineupParam.param"):
+                if (filepath == "N:\\FRPG\\data\\INTERROOT_win32\\param\\GameParam\\ShopLineupParam.param" or
+                 filepath == "N:\\FRPG\\data\\INTERROOT_x64\\param\\GameParam\\ShopLineupParam.param"):
                     content_list[index] = (file_id, filepath, slp_binary_export)
-                if (filepath == "N:\FRPG\data\INTERROOT_win32\param\GameParam\CharaInitParam.param" or
-                 filepath == "N:\FRPG\data\INTERROOT_x64\param\GameParam\CharaInitParam.param"):
+                if (filepath == "N:\\FRPG\\data\\INTERROOT_win32\\param\\GameParam\\CharaInitParam.param" or
+                 filepath == "N:\\FRPG\\data\\INTERROOT_x64\\param\\GameParam\\CharaInitParam.param"):
                      content_list[index] = (file_id, filepath, cip_binary_export)
             new_content = bnd_rebuilder.repack_bnd(content_list)
             if is_remastered:

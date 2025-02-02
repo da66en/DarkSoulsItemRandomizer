@@ -109,7 +109,7 @@ USEFUL_ITEMS = {
     800: {"item_id": 800, "item_name": "Large Ember"},
     801: {"item_id": 801, "item_name": "Very Large Ember"},
     813: {"item_id": 813, "item_name": "Chaos Flame Ember"},
-    3500: {"item_id": 3500, "item_name": "Cast Light"},
+    190000: {"item_id": 190000, "item_name": "Sunlight Maggot"},
 }
 
 USEFUL_RINGS = {
@@ -204,6 +204,7 @@ class HintBuilder:
         self.key_items = []
         self.big_keys = []
         self.hint_list = []
+        self.hint_locations = HINT_LOCATIONS.copy()
 
     def AddItemOrLocationToHintBuilder(self, itemlotpart, loc_id):
         item_name = ""
@@ -269,6 +270,29 @@ class HintBuilder:
         hint_index = 0
 
         for event in blood_messages.messages:
-            if event.id in HINT_LOCATIONS and hint_index < len(self.hint_list):
+            if event.id in self.hint_locations and hint_index < len(self.hint_list):
                 event.text = self.hint_list[hint_index]
+                self.hint_locations[event.id]["new_text"] = event.text
                 hint_index += 1
+
+    def WriteDebugFile(self, filepath: str):
+        """
+        Prints the seed's hint locations into a file at the provided filepath
+        """
+
+        hint_debug_text = ""
+
+        for location_id in self.hint_locations:
+            location = self.hint_locations[location_id]
+
+            # Remove the line break introduced into the hint text for the game
+            single_line_hint = location["new_text"].replace("\n", "")
+
+            # Each hint will be a single line, "<location> - <original message>: <hint message>"
+            hint_debug_text += (
+                f"{location['area']} - {location['original_text']}: "
+                f"{single_line_hint}\n"
+            )
+
+        with open(filepath, 'w') as f:
+            f.write(hint_debug_text)

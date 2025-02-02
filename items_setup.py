@@ -1473,7 +1473,7 @@ ITEMS = {
  34720010: ItemLotPart(ITEM_DIF.EASY, 2, [ItemLotEntry(ITEM_TYPE.WEAPON, 9019000)], flag = 51210940), 
  34720020: ItemLotPart(ITEM_DIF.EASY, 2, [ItemLotEntry(ITEM_TYPE.WEAPON, 9019000)], flag = 51210930), 
  34800000: ItemLotPart(ITEM_DIF.NPC_HARD, 2, [ItemLotEntry(ITEM_TYPE.NONE, 0, count = 0, rate = 965), ItemLotEntry(ITEM_TYPE.ITEM, 1060, rate = 5, luck = False), ItemLotEntry(ITEM_TYPE.ITEM, 375, rate = 30, luck = False)]), 
- 34800100: ItemLotPart(ITEM_DIF.HARD, 2, [ItemLotEntry(ITEM_TYPE.ARMOR, 190000)], flag = 51410990), 
+ 34800100: ItemLotPart(ITEM_DIF.KEY, 2, [ItemLotEntry(ITEM_TYPE.ARMOR, 190000)], flag = 51410990, key_name = "sunlight_maggot"), 
  34900000: ItemLotPart(ITEM_DIF.NOT_IN_POOL, 2, [ItemLotEntry(ITEM_TYPE.NONE, 0, count = 0)]), 
  34900100: ItemLotPart(ITEM_DIF.NOT_IN_POOL, 2, [ItemLotEntry(ITEM_TYPE.NONE, 0, count = 0)]), 
  34900200: ItemLotPart(ITEM_DIF.NOT_IN_POOL, 2, [ItemLotEntry(ITEM_TYPE.NONE, 0, count = 0)]), 
@@ -1793,7 +1793,7 @@ ITEMS = {
  
  60002200: ItemLotPart(ITEM_DIF.EASY, 2, [ItemLotEntry(ITEM_TYPE.ITEM, 3400)], flag = 11207000),
  60002201: ItemLotPart(ITEM_DIF.MEDIUM, 2, [ItemLotEntry(ITEM_TYPE.ITEM, 3410)], flag = 11207010),
- 60002202: ItemLotPart(ITEM_DIF.KEY, 2, [ItemLotEntry(ITEM_TYPE.ITEM, 3500)], flag = 11207020, key_name = "cast_light"),
+ 60002202: ItemLotPart(ITEM_DIF.EASY, 2, [ItemLotEntry(ITEM_TYPE.ITEM, 3500)], flag = 11207020),
  60002203: ItemLotPart(ITEM_DIF.EASY, 2, [ItemLotEntry(ITEM_TYPE.ITEM, 3530)], flag = 11207030),
  60002204: ItemLotPart(ITEM_DIF.EASY, 2, [ItemLotEntry(ITEM_TYPE.ITEM, 3550)], flag = 11207040),
  60002205: ItemLotPart(ITEM_DIF.HARD, 2, [ItemLotEntry(ITEM_TYPE.WEAPON, 1305000)]),
