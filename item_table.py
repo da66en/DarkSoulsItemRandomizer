@@ -433,7 +433,7 @@ class ItemTable:
             "very_large_ember": "Very Large Ember", 
             "large_magic_ember": "Large Magic Ember", 
             "crystal_ember": "Crystal Ember",
-            "cast_light": "Cast Light",
+            "sunlight_maggot": "Sunlight Maggot",
             "lord_soul_shard_seath": "Bequeathed Lord Soul Shard (Seath)", 
             "lord_soul_shard_four_kings": "Bequeathed Lord Soul Shard (Four Kings)", 
             "lord_soul_bed_of_chaos": "Lord Soul (Bed of Chaos)", 

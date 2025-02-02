@@ -109,7 +109,7 @@ USEFUL_ITEMS = {
     800: {"item_id": 800, "item_name": "Large Ember"},
     801: {"item_id": 801, "item_name": "Very Large Ember"},
     813: {"item_id": 813, "item_name": "Chaos Flame Ember"},
-    3500: {"item_id": 3500, "item_name": "Cast Light"},
+    190000: {"item_id": 190000, "item_name": "Sunlight Maggot"},
 }
 
 USEFUL_RINGS = {

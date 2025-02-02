@@ -197,18 +197,22 @@ def place_upgrade_items(table, random_source, item_list):
             if loc.diff == loc_s.LOC_DIF.RANDOM_UPGRADE:
                 itemlotpart = transmute_itemlotpart_to_rng_drop_upgrade(itemlotpart, random_source)
             table.place_itemlotpart_at_location(itemlotpart, loc_id, item_list)
-            
+
+def place_key_item_in_specific_location(table, key_name, current_key_locations, item_list, first_key_loc_id):
+    current_key_locations[key_name] = table.location_dict[first_key_loc_id]
+    key_item = find_key_item_by_name(key_name, item_list)
+    table.place_itemlotpart_at_location(key_item, first_key_loc_id, item_list)
+
 def place_key_item_in_vanilla_location(table, key_name, current_key_locations, item_list):
     key_loc_ids = [loc_id for loc_id in table.location_dict
      if table.location_dict[loc_id].default_key == key_name]
     first_key_loc_id = key_loc_ids[0]
-    current_key_locations[key_name] = table.location_dict[first_key_loc_id]
-    key_item = find_key_item_by_name(key_name, item_list)
-    table.place_itemlotpart_at_location(key_item, first_key_loc_id, item_list)
+    place_key_item_in_specific_location(table, key_name, current_key_locations, item_list, first_key_loc_id)
             
 def place_key_items(table, rand_options, random_source, item_list):
     log.info("Placing key items.")
     current_key_locations = {}
+    dlc_keys = ["annex_key", "broken_pendant", "crest_key", "peculiar_doll"]
     if rand_options.key_placement == rng_opt.RandOptKeyDifficulty.LEAVE_ALONE:
         log.info("Placing key items in vanilla locations.")
         for key_name in key_items_s.KEY_NAMES:
@@ -219,7 +223,10 @@ def place_key_items(table, rand_options, random_source, item_list):
             current_key_locations[key] = "cannot_place"       
         #current_areas = set(["starting"])
         
-        if not rand_options.use_lordvessel:
+        if rand_options.use_lordvessel == rng_opt.RandOptLordvesselLocation.FIRELINK:
+            log.info("Placing Lordvessel in Firelink shrine.")
+            place_key_item_in_specific_location(table, "lordvessel", current_key_locations, item_list, 1020000)
+        elif rand_options.use_lordvessel == rng_opt.RandOptLordvesselLocation.GWYNEVERE:
             log.info("Placing Lordvessel in vanilla location.")
             place_key_item_in_vanilla_location(table, "lordvessel", current_key_locations, item_list)
         if not rand_options.use_lord_souls:
@@ -228,7 +235,10 @@ def place_key_items(table, rand_options, random_source, item_list):
             place_key_item_in_vanilla_location(table, "lord_soul_shard_four_kings", current_key_locations, item_list)
             place_key_item_in_vanilla_location(table, "lord_soul_bed_of_chaos", current_key_locations, item_list)
             place_key_item_in_vanilla_location(table, "lord_soul_nito", current_key_locations, item_list)          
-
+        if rand_options.keys_not_in_dlc:
+            log.info("Since DLC disabled, placing DLC keys in vanilla locations.")
+            place_key_item_in_vanilla_location(table, "annex_key", current_key_locations, item_list)
+            place_key_item_in_vanilla_location(table, "crest_key", current_key_locations, item_list)
         has_good_trial = False
         while not has_good_trial:
             has_good_trial = True
@@ -248,7 +258,9 @@ def place_key_items(table, rand_options, random_source, item_list):
                     trial_key_locations[key_name] = current_key_locations[key_name]
                 else:
                     trial_key_locations[key_name] = "to_place"
-    
+
+            is_race_key_loc = (rand_options.key_placement == rng_opt.RandOptKeyDifficulty.RACE_MODE or 
+                rand_options.key_placement == rng_opt.RandOptKeyDifficulty.SPEEDRUN_MODE)
             keys_to_place = sorted([key for key in trial_key_locations if trial_key_locations[key] == "to_place"])
             used_loc_ids = set([])
             for key_name in keys_to_place:
@@ -263,9 +275,10 @@ def place_key_items(table, rand_options, random_source, item_list):
                     plausible_loc_ids if (loc_id not in used_loc_ids and 
                      table.location_dict[loc_id].area in restricted_areas) and
                      not table.location_dict[loc_id].is_transient]
-                if (rand_options.key_placement == rng_opt.RandOptKeyDifficulty.RACE_MODE or 
-                 rand_options.key_placement == rng_opt.RandOptKeyDifficulty.SPEEDRUN_MODE):
-                    possible_loc_ids = [loc_id for loc_id in pre_possible_loc_ids if table.location_dict[loc_id].is_race_key_loc]
+
+                keys_not_in_dlc = rand_options.keys_not_in_dlc
+                if (is_race_key_loc or keys_not_in_dlc) and ((key_name not in dlc_keys) or not keys_not_in_dlc):
+                    possible_loc_ids = [loc_id for loc_id in pre_possible_loc_ids if (((not is_race_key_loc) or table.location_dict[loc_id].is_race_key_loc) and ((not keys_not_in_dlc) or (not table.location_dict[loc_id].is_dlc)))]
                 else:
                     possible_loc_ids = pre_possible_loc_ids
                     
@@ -384,7 +397,7 @@ def place_starting_equipment(table, data_passed_from_chr_init, item_list):
 def build_table(rand_options, random_source, chr_init_data):
     # Create a deep copy of the list of items to be modified for this table.
     item_list = copy.deepcopy(item_s.ITEMS)
-    
+
     # Deal with chr_init_data
     if chr_init_data == None:
         chr_inits = [chr_s.VANILLA_CHRS[chr_id].to_chr_init(chr_id , "") for chr_id in chr_s.VANILLA_CHRS]
@@ -427,6 +440,7 @@ if __name__ == "__main__":
       rng_opt.RandOptSoulItemsDifficulty.SHUFFLE,
       rng_opt.RandOptStartItemsDifficulty.COMBINED_POOL_AND_2H,
       rng_opt.RandOptGameVersion.PTDE,
+      False,
       False)
     
     rng = random.Random()
