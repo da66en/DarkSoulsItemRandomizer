@@ -423,6 +423,7 @@ class MainGUI:
         self.msg_area.insert("end", "\t\tcaerulius\n")
         self.msg_area.insert("end", "\t\tforstycup\n")
         self.msg_area.insert("end", "\t\tAbscondWithAPie\n")
+        self.msg_area.insert("end", "\t\AzetinnitezA\n")
         self.msg_area.insert("end", "\t\tda66en\n")
         self.msg_area.config(state="disabled")
         self.msg_area.lift()
