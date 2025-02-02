@@ -31,11 +31,11 @@ MAX_SEED_LENGTH = 64
 
 VERSION_NUM = "0.6.2"
 
-PTDE_GAMEPARAM_PATH_LIST = ["./GameParam.parambnd", "./param/GameParam/GameParam.parambnd", "C:\\Programs\\Steam\\steamapps\\common\\Dark Souls Prepare to Die Edition\\DATA\\param\\GameParam\\GameParam.parambnd"]
-DS1R_GAMEPARAM_PATH_LIST = ["./GameParam.parambnd.dcx", "./param/GameParam/GameParam.parambnd.dcx", "D:\\SteamLibrary\\steamapps\\common\\DARK SOULS REMASTERED\\param\\GameParam\\GameParam.parambnd.dcx", "D:\\Program Files (x86)\\Steam\\steamapps\\common\\DARK SOULS REMASTERED\\param\\GameParam\\GameParam.parambnd.dcx"]
+PTDE_GAMEPARAM_PATH_LIST = ["./GameParam.parambnd", "./param/GameParam/GameParam.parambnd", "C:\Program Files (x86)\Steam\steamapps\common\Dark Souls Prepare to Die Edition\DATA\param\GameParam\GameParam.parambnd"]
+DS1R_GAMEPARAM_PATH_LIST = ["./GameParam.parambnd.dcx", "./param/GameParam/GameParam.parambnd.dcx", "D:\SteamLibrary\steamapps\common\DARK SOULS REMASTERED\param\GameParam\GameParam.parambnd.dcx", "D:\Program Files (x86)\Steam\steamapps\common\DARK SOULS REMASTERED\param\GameParam\GameParam.parambnd.dcx"]
 
-PTDE_ENGMENU_PATH_LIST = ["./msg/ENGLISH/menu.msgbnd", "C:\\Programs\\Steam\\steamapps\\common\\Dark Souls Prepare to Die Edition\\DATA\\msg\\ENGLISH\\menu.msgbnd"]
-DS1R_ENGMENU_PATH_LIST = ["./msg/ENGLISH/menu.msgbnd.dcx", "D:/SteamLibrary/steamapps/common/DARK SOULS REMASTERED/msg/ENGLISH/menu.msgbnd.dcx", "D:/Program Files (x86)/Steam/steamapps/common/DARK SOULS REMASTERED/msg/ENGLISH/menu.msgbnd.dcx"]
+PTDE_ENGMENU_PATH_LIST = ["./msg/ENGLISH/menu.msgbnd", "C:\Program Files (x86)\Steam\steamapps\common\Dark Souls Prepare to Die Edition\DATA\msg\ENGLISH\menu.msgbnd"]
+DS1R_ENGMENU_PATH_LIST = ["./msg/ENGLISH/menu.msgbnd.dcx", "D:\SteamLibrary\steamapps\common\DARK SOULS REMASTERED\msg\ENGLISH\menu.msgbnd.dcx", "D:\Program Files (x86)\Steam\steamapps\common\DARK SOULS REMASTERED\msg\ENGLISH\menu.msgbnd.dcx"]
 
 DESC_DICT = {
     "diff": {rngopts.RandOptDifficulty.EASY: "* Perfectly fair. Items have an equal chance to be placed anywhere.\n", 
@@ -726,7 +726,7 @@ class MainGUI:
             
             # open our menu text file
             # TODO: Consolidate this instead of duplicating
-            if self.set_up_hints.get():
+            if is_remastered and self.set_up_hints.get():
                 with open(enmenu_filepath, "rb") as f:
                     enmenu_content = f.read()
                 try:
@@ -805,17 +805,18 @@ class MainGUI:
                 f.write(new_content)
             
             # Write out our menu text if we need to
-            if self.set_up_hints.get():
-                for index, (file_id, filepath, filedata) in enumerate(enmenu_content_list):
-                    if (filepath == "N:\\FRPG\\data\\Msg\\Data_ENGLISH\\Blood_writing_.fmg"):
-                        fmgData = FMGHandler(FMGHandler.load_from_file_content(filedata))
-                        item_table.hint_builder.AddHintsToBloodMessages(fmgData, rng)
-                        enmenu_content_list[index] = (file_id, filepath, fmgData.export_as_binary())
-                new_content = bnd_rebuilder.repack_bnd(enmenu_content_list)
-                if is_remastered:
-                    new_content = dcx_handler.compress_dcx_content(new_content)
-                with open(enmenu_filepath, "wb") as f:
-                    f.write(new_content)            
+            if is_remastered:
+                if self.set_up_hints.get():
+                    for index, (file_id, filepath, filedata) in enumerate(enmenu_content_list):
+                        if (filepath == "N:\FRPG\data\Msg\Data_ENGLISH\Blood_writing_.fmg"):
+                            fmgData = FMGHandler(FMGHandler.load_from_file_content(filedata))
+                            item_table.hint_builder.AddHintsToBloodMessages(fmgData, rng)
+                            enmenu_content_list[index] = (file_id, filepath, fmgData.export_as_binary())
+                    new_content = bnd_rebuilder.repack_bnd(enmenu_content_list)
+                    if is_remastered:
+                        new_content = dcx_handler.compress_dcx_content(new_content)
+                    with open(enmenu_filepath, "wb") as f:
+                        f.write(new_content)            
             
             seed_folder = self.export_seed_info((options, randomized_data, rng))
                 
