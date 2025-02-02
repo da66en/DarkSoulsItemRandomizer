@@ -29,13 +29,13 @@ INI_FILE = "randomizer.ini"
 
 MAX_SEED_LENGTH = 64
 
-VERSION_NUM = "0.6.2"
+VERSION_NUM = "0.6.3"
 
-PTDE_GAMEPARAM_PATH_LIST = ["./GameParam.parambnd", "./param/GameParam/GameParam.parambnd", "C:\Program Files (x86)\Steam\steamapps\common\Dark Souls Prepare to Die Edition\DATA\param\GameParam\GameParam.parambnd"]
-DS1R_GAMEPARAM_PATH_LIST = ["./GameParam.parambnd.dcx", "./param/GameParam/GameParam.parambnd.dcx", "D:\SteamLibrary\steamapps\common\DARK SOULS REMASTERED\param\GameParam\GameParam.parambnd.dcx", "D:\Program Files (x86)\Steam\steamapps\common\DARK SOULS REMASTERED\param\GameParam\GameParam.parambnd.dcx"]
+PTDE_GAMEPARAM_PATH_LIST = ["./GameParam.parambnd", "./param/GameParam/GameParam.parambnd", "C:\Program Files (x86)\Steam\steamapps\common\Dark Souls Prepare to Die Edition\DATA\param\GameParam\GameParam.parambnd", "C:\Programs\Steam\steamapps\common\Dark Souls Prepare to Die Edition\DATA\param\GameParam\GameParam.parambnd"]
+DS1R_GAMEPARAM_PATH_LIST = ["./GameParam.parambnd.dcx", "./param/GameParam/GameParam.parambnd.dcx", "D:\SteamLibrary\steamapps\common\DARK SOULS REMASTERED\param\GameParam\GameParam.parambnd.dcx", "D:\Program Files (x86)\Steam\steamapps\common\DARK SOULS REMASTERED\param\GameParam\GameParam.parambnd.dcx", "C:\programs\Steam\steamapps\common\DARK SOULS REMASTERED\param\GameParam\GameParam.parambnd.dcx"]
 
-PTDE_ENGMENU_PATH_LIST = ["./msg/ENGLISH/menu.msgbnd", "C:\Program Files (x86)\Steam\steamapps\common\Dark Souls Prepare to Die Edition\DATA\msg\ENGLISH\menu.msgbnd"]
-DS1R_ENGMENU_PATH_LIST = ["./msg/ENGLISH/menu.msgbnd.dcx", "D:\SteamLibrary\steamapps\common\DARK SOULS REMASTERED\msg\ENGLISH\menu.msgbnd.dcx", "D:\Program Files (x86)\Steam\steamapps\common\DARK SOULS REMASTERED\msg\ENGLISH\menu.msgbnd.dcx"]
+PTDE_ENGMENU_PATH_LIST = ["./msg/ENGLISH/menu.msgbnd", "C:\Program Files (x86)\Steam\steamapps\common\Dark Souls Prepare to Die Edition\DATA\msg\ENGLISH\menu.msgbnd", "C:\Programs\Steam\steamapps\common\Dark Souls Prepare to Die Edition\DATA\msg\ENGLISH\menu.msgbnd"]
+DS1R_ENGMENU_PATH_LIST = ["./msg/ENGLISH/menu.msgbnd.dcx", "D:\SteamLibrary\steamapps\common\DARK SOULS REMASTERED\msg\ENGLISH\menu.msgbnd.dcx", "D:\Program Files (x86)\Steam\steamapps\common\DARK SOULS REMASTERED\msg\ENGLISH\menu.msgbnd.dcx", "C:\Programs\Steam\steamapps\common\DARK SOULS REMASTERED\msg\ENGLISH\menu.msgbnd.dcx"]
 
 DESC_DICT = {
     "diff": {rngopts.RandOptDifficulty.EASY: "* Perfectly fair. Items have an equal chance to be placed anywhere.\n", 
@@ -142,6 +142,7 @@ class MainGUI:
         
         tk.Label(self.root, text="Dark Souls Game Version:").grid(row=1, column=0, columnspan=2, sticky='W', padx=2, ipady=1)
         self.game_version = tk.StringVar()
+        self.game_version.trace('w', lambda name, index, mode: self.update())
         self.game_version_menu = ttk.Combobox(self.root, textvariable=self.game_version, state="readonly", 
             values=[rngopts.RandOptGameVersion.PTDE, rngopts.RandOptGameVersion.REMASTERED],
             style="GameVersion.TCombobox")
@@ -311,7 +312,7 @@ class MainGUI:
             width=20, anchor=tk.W)
             self.lv_check.grid(row=5, column=4, sticky='W')
             self.setup_hover_events(self.lv_check, {"use_lv": None}, no_emph = True)
-        else:   #xyz
+        else:
             self.use_lordvessel = tk.StringVar()
             self.use_lordvessel.set(rngopts.RandOptLordvesselLocation.verify(ini_parser.get_option_value(init_options, "use_lordvessel")))
             self.use_lordvessel.trace('w', lambda name, index, mode: self.update())
@@ -418,6 +419,7 @@ class MainGUI:
         self.msg_area.insert("end", "\t\thotpocketremix\n")
         self.msg_area.insert("end", "\t\tcaerulius\n")
         self.msg_area.insert("end", "\t\tforstycup\n")
+        self.msg_area.insert("end", "\t\tAbscondWithAPie\n")
         self.msg_area.insert("end", "\t\tda66en\n")
         self.msg_area.config(state="disabled")
         self.msg_area.lift()
@@ -515,6 +517,13 @@ class MainGUI:
             self.diff_rbutton1.config(state="normal")
             self.diff_rbutton2.config(state="normal")
             self.diff_rbutton3.config(state="normal")
+
+        # xyz
+        if self.game_version.get() == rngopts.RandOptGameVersion.REMASTERED:
+            self.hint_check.config(state="normal")
+        else:
+            self.set_up_hints.set(False)
+            self.hint_check.config(state="disabled")
         self.update_desc()
         
     def randomize_data(self, chr_init_data):

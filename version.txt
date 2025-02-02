@@ -1,1 +1,9 @@
-0.6.2
+0.6.3
+- Adds debug file output for in-game hints. (AbscondWithAPie)
+- removed 'cast light' from key items, made 'sunlight maggot helm' a key item instead. (da66en)
+- added 'No DLC' option.  Key items will NOT be in Painted World or Artorias of the Abyss DLC locations.  Also keys needed for those areas will not be placed outside of these areas, to prevent you from getting keys in sections that aren't needed.  (da66en)
+- added 'Lordvessel @ Firelink' option.  The Lordvessel is at Firelink Shrine, which significantly speeds up the game. (da66en)
+- 'Seek Guidance Help' is actually followed, and won't cause PTDE to crash.  I have doubts 'Seek Guideance Help' works as it uses hard coded directory locations on the N:\ drive. (da66en)
+- 'Seek Guidance Help' added to the .ini file saving/loading. (da66en)
+- Changed the about screen to show all the developers who have worked on the Dark Souls Item Randomizer. (da66en)
+- Disable and clear 'Seek Guidance' if PTDE version is being used. (da66en)
