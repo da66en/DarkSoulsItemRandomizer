@@ -1,6 +1,6 @@
 # Dark Souls Item Randomizer
 
-Instructions:
+**Instructions:**
 
 * (PTDE Only) Unpack your Dark Souls archive files using UnpackDarkSoulsForModding, which can be found [here](https://github.com/HotPocketRemix/UnpackDarkSoulsForModding).
 * Download `DarkSoulsItemRandomizer.exe`, and place it in your Dark Souls directory, where DARKSOULS.exe (PTDE) or DarkSoulsRemastered.exe (DS1R) are.
@@ -9,8 +9,15 @@ configuration to `GameParam.parambnd` or `GameParam.parambnd.dcx`, depending on 
 A directory with the current date/time stamp will be created containing information about the item distribution, including a cheatsheet.
 * If you want to inspect a certain item distribution, but not modify the actual game files, you can instead input a seed and click the "Write Seed Info" button
 to generate the same type of folder as above, without modifying the current item distribution. Note that you *must* input a seed for this to work.
+* Having 'Save Settings To Default' will write settings to INI file when Export button is pressed.
+* To share settings and seeds with others, right click and choose 'Copy settings to Sync'.  A seed/settings string will be generated and placed in your clipboard, use paste (CTRL-V) to paste that string in chat, Discord, e-mails, etc.
+* To load settings shared with others, copy to the clipboard (CTRL+C) the seed/settings strings shared with you and then right click in the and coose 'Paste settings sync'.
 
-To restore the default item distribution:
+*To restore the default item distribution automatically:*
+
+* Press the 'Revert to vanilla' button
+
+*To restore the default item distribution manually:*
 
 * Check that `GameParam.parambnd[.dcx].bak` exists in `\param\GameParam`.
 * Delete `GameParam.parambnd[.dcx]` from `\param\GameParam`.
@@ -404,6 +411,6 @@ Valley of Drakes|"Ring Ahead"|Before the bridge with the wyverns, approaching fr
 Demon Ruins|"Safe Zone Ahead"|In Centipede Demon room, to the right on approach to patch of ground out of the lava.|
 Crystal Cave|"Path Ahead"|On the first invisible bridge.|
 
-**For Developers**
+**For Developers:**
 
 Generating executable: `pyinstaller randomizer_gui.py --onefile -i favicon.ico --add-data "favicon.gif;." --noconsole --name "DarkSoulsItemRandomizer"`
