@@ -1,3 +1,6 @@
+unreleased (0.6.4)
+- Adds 'Revert to Vanilla' (AzetinnitezA)
+
 0.6.3
 - Adds debug file output for in-game hints. (AbscondWithAPie)
 - removed 'cast light' from key items, made 'sunlight maggot helm' a key item instead. (da66en)
