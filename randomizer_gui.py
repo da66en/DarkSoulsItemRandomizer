@@ -29,7 +29,7 @@ INI_FILE = "randomizer.ini"
 
 MAX_SEED_LENGTH = 64
 
-VERSION_NUM = "0.6.3"
+VERSION_NUM = "0.6.4"
 
 PTDE_GAMEPARAM_PATH_LIST = ["./GameParam.parambnd", "./param/GameParam/GameParam.parambnd", "C:\Program Files (x86)\Steam\steamapps\common\Dark Souls Prepare to Die Edition\DATA\param\GameParam\GameParam.parambnd", "C:\Programs\Steam\steamapps\common\Dark Souls Prepare to Die Edition\DATA\param\GameParam\GameParam.parambnd"]
 DS1R_GAMEPARAM_PATH_LIST = ["./GameParam.parambnd.dcx", "./param/GameParam/GameParam.parambnd.dcx", "D:\SteamLibrary\steamapps\common\DARK SOULS REMASTERED\param\GameParam\GameParam.parambnd.dcx", "D:\Program Files (x86)\Steam\steamapps\common\DARK SOULS REMASTERED\param\GameParam\GameParam.parambnd.dcx", "C:\programs\Steam\steamapps\common\DARK SOULS REMASTERED\param\GameParam\GameParam.parambnd.dcx"]
@@ -423,7 +423,7 @@ class MainGUI:
         self.msg_area.insert("end", "\t\tcaerulius\n")
         self.msg_area.insert("end", "\t\tforstycup\n")
         self.msg_area.insert("end", "\t\tAbscondWithAPie\n")
-        self.msg_area.insert("end", "\t\AzetinnitezA\n")
+        self.msg_area.insert("end", "\t\tAzetinnitezA\n")
         self.msg_area.insert("end", "\t\tda66en\n")
         self.msg_area.config(state="disabled")
         self.msg_area.lift()
