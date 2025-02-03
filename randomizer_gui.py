@@ -32,7 +32,7 @@ INI_FILE = "randomizer.ini"
 
 MAX_SEED_LENGTH = 64
 
-VERSION_NUM = "0.6.5"
+VERSION_NUM = "0.6.6"
 # only add versions compatible RNG-wise, IE when fixing GUI stuff
 COMPATIBLE_VERSIONS = [VERSION_NUM, ]
 
@@ -360,6 +360,9 @@ class MainGUI:
             SettingsVariable(name='npc', variable=self.npc_armor_bool, options=DESC_DICT['npc_armor'].keys()),
             SettingsVariable(name='lv', variable=self.use_lordvessel, options=DESC_DICT['use_lv'].keys()),
             SettingsVariable(name='ls', variable=self.use_lord_souls, options=DESC_DICT['use_lord_souls'].keys()),
+            SettingsVariable(name='nodlc', variable=self.keys_not_in_dlc, options=DESC_DICT['keys_not_in_dlc'].keys()),
+            SettingsVariable(name='aw', variable=self.ascend_weapons_bool, options=DESC_DICT['ascend_weapons'].keys()),
+            SettingsVariable(name='hints', variable=self.set_up_hints, options=DESC_DICT['set_up_hints'].keys()),
         ], call_after_update=self.update_desc)
 
         self.update_desc()
@@ -416,6 +419,7 @@ class MainGUI:
         self.msg_area.insert("end", "\t\tforstycup\n")
         self.msg_area.insert("end", "\t\tAbscondWithAPie\n")
         self.msg_area.insert("end", "\t\tAzetinnitezA\n")
+        self.msg_area.insert("end", "\t\teaglevis\n")
         self.msg_area.insert("end", "\t\tda66en\n")
         self.msg_area.config(state="disabled")
         self.msg_area.lift()
