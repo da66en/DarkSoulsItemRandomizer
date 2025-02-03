@@ -1,5 +1,6 @@
-unreleased (0.6.4)
+unreleased (0.6.6)
 - Adds 'Revert to Vanilla' (AzetinnitezA)
+- Adds copy to clipboard and paste from clipboard seed and settings on right mouse click (eaglevis)
 
 0.6.3
 - Adds debug file output for in-game hints. (AbscondWithAPie)

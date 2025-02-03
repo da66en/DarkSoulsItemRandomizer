@@ -22,6 +22,9 @@ import dcx_handler
 from fmg_handler import FMGHandler
 
 import logging
+
+from settings_string_io import SettingsStringIO, SettingsVariable, IncompatibleVersionError, InvalidValueError
+
 log = logging.getLogger(__name__)
 
 import ini_parser 
@@ -29,7 +32,9 @@ INI_FILE = "randomizer.ini"
 
 MAX_SEED_LENGTH = 64
 
-VERSION_NUM = "0.6.4"
+VERSION_NUM = "0.6.6"
+# only add versions compatible RNG-wise, IE when fixing GUI stuff
+COMPATIBLE_VERSIONS = [VERSION_NUM, ]
 
 PTDE_GAMEPARAM_PATH_LIST = ["./GameParam.parambnd", "./param/GameParam/GameParam.parambnd", "C:\Program Files (x86)\Steam\steamapps\common\Dark Souls Prepare to Die Edition\DATA\param\GameParam\GameParam.parambnd", "C:\Programs\Steam\steamapps\common\Dark Souls Prepare to Die Edition\DATA\param\GameParam\GameParam.parambnd"]
 DS1R_GAMEPARAM_PATH_LIST = ["./GameParam.parambnd.dcx", "./param/GameParam/GameParam.parambnd.dcx", "D:\SteamLibrary\steamapps\common\DARK SOULS REMASTERED\param\GameParam\GameParam.parambnd.dcx", "D:\Program Files (x86)\Steam\steamapps\common\DARK SOULS REMASTERED\param\GameParam\GameParam.parambnd.dcx", "C:\programs\Steam\steamapps\common\DARK SOULS REMASTERED\param\GameParam\GameParam.parambnd.dcx"]
@@ -83,7 +88,6 @@ DESC_DICT = {
 DESC_ORDER = ["diff", "key_diff", "souls_diff", "keys_not_in_dlc", "start_items", "fashion", "npc_armor", "use_lv", "use_lord_souls", "ascend_weapons", "set_up_hints"]
 
 
-
 def resource_path(rel_path):
     try:
         base_path = sys._MEIPASS
@@ -91,10 +95,12 @@ def resource_path(rel_path):
         base_path = os.path.abspath(".")
     return os.path.join(base_path, rel_path)
 
+
 class Placeholder_State(object):
-     __slots__ = 'normal_color', 'normal_font', 'placeholder_text', 'placeholder_color', 'placeholder_font', 'with_placeholder'
-     
-class DescriptionState():
+    __slots__ = 'normal_color', 'normal_font', 'placeholder_text', 'placeholder_color', 'placeholder_font', 'with_placeholder'
+
+
+class DescriptionState:
     NORMAL = "normal"
     DEEMPH = "deemph"
     EMPH = "emph"
@@ -115,6 +121,7 @@ class DescriptionState():
         self.text_area.tag_config(DescriptionState.DEEMPH, foreground="grey")
         self.text_area.tag_config(DescriptionState.EMPH, foreground="red2")
         self.text_area.config(state="disabled")
+
 
 class MainGUI:
     def __init__(self):
@@ -281,7 +288,7 @@ class MainGUI:
          variable=self.fashion_bool, onvalue=True, offvalue=False, padx=2,
          width=20, anchor=tk.W)
         self.fashion_check.grid(row=3, column=4, sticky='W')
-        self.setup_hover_events(self.fashion_check, {"fashion": None}, no_emph = True)
+        self.setup_hover_events(self.fashion_check, {"fashion": None}, no_emph=True)
         
         self.npc_armor_bool = tk.BooleanVar()
         self.npc_armor_bool.set(ini_parser.get_option_value(init_options, "randomize_npc_armor"))
@@ -290,41 +297,17 @@ class MainGUI:
          variable=self.npc_armor_bool, onvalue=True, offvalue=False, padx=2,
          width=20, anchor=tk.W)
         self.npc_armor_check.grid(row=4, column=4, sticky='W')
-        self.setup_hover_events(self.npc_armor_check, {"npc_armor": None}, no_emph = True)
+        self.setup_hover_events(self.npc_armor_check, {"npc_armor": None}, no_emph=True)
         
-        if False:
-            tk.Label(self.root, text="Dark Souls Game Version:").grid(row=1, column=0, columnspan=2, sticky='W', padx=2, ipady=1)
-            self.game_version = tk.StringVar()
-            self.game_version_menu = ttk.Combobox(self.root, textvariable=self.game_version, state="readonly", 
-                values=[rngopts.RandOptGameVersion.PTDE, rngopts.RandOptGameVersion.REMASTERED],
-                style="GameVersion.TCombobox")
-            self.style.map('Highlight.GameVersion.TCombobox', fieldbackground=[('readonly','light salmon')])
-            self.style.map('Error.GameVersion.TCombobox', foreground=[('readonly','red')])
-            # Clear the highlighting of the combobox after user interaction,
-            #  since it auto-highlights for some reason.
-            self.game_version_menu.bind("<<ComboboxSelected>>", lambda _: self.update_game_version())
-            self.game_version_menu.config(width=30)
-            self.game_version_menu.grid(row=1, column=2, sticky='EW', padx=2)
-
-        if False:
-            self.use_lordvessel = tk.BooleanVar()
-            self.use_lordvessel.set(ini_parser.get_option_value(init_options, "use_lordvessel"))
-            self.use_lordvessel.trace('w', lambda name, index, mode: self.update())
-            self.lv_check = tk.Checkbutton(self.root, text="Senile Gwynevere", 
-            variable=self.use_lordvessel, onvalue=True, offvalue=False, padx=2,
-            width=20, anchor=tk.W)
-            self.lv_check.grid(row=5, column=4, sticky='W')
-            self.setup_hover_events(self.lv_check, {"use_lv": None}, no_emph = True)
-        else:
-            self.use_lordvessel = tk.StringVar()
-            self.use_lordvessel.set(rngopts.RandOptLordvesselLocation.verify(ini_parser.get_option_value(init_options, "use_lordvessel")))
-            self.use_lordvessel.trace('w', lambda name, index, mode: self.update())
-            self.gui_lordvessel = ttk.Combobox(self.root, 
-                                               textvariable=self.use_lordvessel,
-                                               values=rngopts.RandOptLordvesselLocation.as_values(),
-                                               state="readonly")
-            self.gui_lordvessel.grid(row=5, column=4, sticky='W')
-            self.setup_hover_events(self.gui_lordvessel, {"use_lv": None}, no_emph = True)
+        self.use_lordvessel = tk.StringVar()
+        self.use_lordvessel.set(rngopts.RandOptLordvesselLocation.verify(ini_parser.get_option_value(init_options, "use_lordvessel")))
+        self.use_lordvessel.trace('w', lambda name, index, mode: self.update())
+        self.gui_lordvessel = ttk.Combobox(self.root, 
+                                            textvariable=self.use_lordvessel,
+                                            values=rngopts.RandOptLordvesselLocation.as_values(),
+                                            state="readonly")
+        self.gui_lordvessel.grid(row=5, column=4, sticky='W')
+        self.setup_hover_events(self.gui_lordvessel, {"use_lv": None}, no_emph = True)
         
         self.use_lord_souls = tk.BooleanVar()
         self.use_lord_souls.set(ini_parser.get_option_value(init_options, "use_lord_souls"))
@@ -352,16 +335,6 @@ class MainGUI:
          width=20, anchor=tk.W)
         self.hint_check.grid(row=8, column=4, sticky='W')
         self.setup_hover_events(self.hint_check, {"set_up_hints": None}, no_emph = True)
-
-        if False:
-            self.start_with_lordvessel = tk.BooleanVar()
-            self.start_with_lordvessel.set(ini_parser.get_option_value(init_options, "start_with_lordvessel"))
-            self.start_with_lordvessel.trace('w', lambda name, index, mode: self.update())
-            self.start_with_lordvessel_check = tk.Checkbutton(self.root, text="Lordvessel start", 
-            variable=self.start_with_lordvessel, onvalue=True, offvalue=False, padx=2,
-            width=20, anchor=tk.W)
-            self.start_with_lordvessel_check.grid(row=9, column=4, sticky='W')
-            self.setup_hover_events(self.start_with_lordvessel_check, {"start_with_lordvessel": None}, no_emph = True)
         
         self.export_button = tk.Button(self.root, text="Scramble Items &\nExport to GameParam", 
          padx=10, pady=10, command=self.export_to_gameparam)
@@ -369,7 +342,29 @@ class MainGUI:
         
         self.cheat_button = tk.Button(self.root, text="Write Seed Cheatsheet", command=self.export_seed_info)
         self.cheat_button.grid(row=12, rowspan=1, column=4, sticky='EW', padx=2, pady=2)
-        
+
+        # Settings sync popup menu
+        self.popup_menu = tk.Menu(self.root, tearoff=0)
+        self.popup_menu.add_command(label="Copy settings sync", command=self.settings_string_copy)
+        self.popup_menu.add_command(label="Paste settings sync", command=self.settings_string_paste)
+        self.root.bind("<Button-3>", self.popup_menu_show)
+
+        self.settings_string_io = SettingsStringIO(VERSION_NUM, COMPATIBLE_VERSIONS, [
+            SettingsVariable(name='seed', variable=self.seed_string, on_update=lambda: self.seed_entry.disable_placeholder()),
+            # SettingsVariable(name='gv', variable=self.game_version, options=(rngopts.RandOptGameVersion.PTDE, rngopts.RandOptGameVersion.REMASTERED)),
+            SettingsVariable(name='diff', variable=self.diff, options=DESC_DICT['diff'].keys()),
+            SettingsVariable(name='kd', variable=self.key_diff, options=DESC_DICT['key_diff'].keys()),
+            SettingsVariable(name='sd', variable=self.soul_diff, options=DESC_DICT['souls_diff'].keys()),
+            SettingsVariable(name='id', variable=self.start_items_diff, options=DESC_DICT['start_items'].keys()),
+            SettingsVariable(name='fs', variable=self.fashion_bool, options=DESC_DICT['fashion'].keys()),
+            SettingsVariable(name='npc', variable=self.npc_armor_bool, options=DESC_DICT['npc_armor'].keys()),
+            SettingsVariable(name='lv', variable=self.use_lordvessel, options=DESC_DICT['use_lv'].keys()),
+            SettingsVariable(name='ls', variable=self.use_lord_souls, options=DESC_DICT['use_lord_souls'].keys()),
+            SettingsVariable(name='nodlc', variable=self.keys_not_in_dlc, options=DESC_DICT['keys_not_in_dlc'].keys()),
+            SettingsVariable(name='aw', variable=self.ascend_weapons_bool, options=DESC_DICT['ascend_weapons'].keys()),
+            SettingsVariable(name='hints', variable=self.set_up_hints, options=DESC_DICT['set_up_hints'].keys()),
+        ], call_after_update=self.update_desc)
+
         self.update_desc()
         self.detect_game_version()
         self.check_for_new_version()
@@ -393,7 +388,7 @@ class MainGUI:
                 return
         self.game_version.set("No GameParam detected! Exporting has been disabled.")
         self.game_version_menu.configure(style="Error.GameVersion.TCombobox")
-        self.export_button.config(state = "disabled")
+        self.export_button.config(state="disabled")
         
     def quit_button(self):
         self.root.destroy()
@@ -424,6 +419,7 @@ class MainGUI:
         self.msg_area.insert("end", "\t\tforstycup\n")
         self.msg_area.insert("end", "\t\tAbscondWithAPie\n")
         self.msg_area.insert("end", "\t\tAzetinnitezA\n")
+        self.msg_area.insert("end", "\t\teaglevis\n")
         self.msg_area.insert("end", "\t\tda66en\n")
         self.msg_area.config(state="disabled")
         self.msg_area.lift()
@@ -538,7 +534,7 @@ class MainGUI:
         self.update_desc_with_fade(overwrite_desc_specifiers)
         self.has_hovered_desc = True
         
-    def setup_hover_events(self, hover_object, hovered_parts, no_emph = False):
+    def setup_hover_events(self, hover_object, hovered_parts, no_emph=False):
         hover_object.bind("<Enter>", lambda _: self.update_desc_for_hover(hovered_parts, no_emph))
         hover_object.bind("<Leave>", lambda _: self.update_desc(respect_current_hover = False))
         hover_object.bind("<Return>", lambda _: self.update_desc(respect_current_hover = False))
@@ -548,7 +544,7 @@ class MainGUI:
         except:
             pass
         
-    def update_desc(self, respect_current_hover = True):
+    def update_desc(self, respect_current_hover=True):
         if not (respect_current_hover and self.has_hovered_desc):
             self.has_hovered_desc = False
             self.get_current_desc_state().write_state_to_area()
@@ -599,7 +595,7 @@ class MainGUI:
 
         rng = random.Random()
         rng.seed(int(hashlib.sha256(self.seed_string.get().encode('utf-8')).hexdigest(), 16))
-        return (options, randomize_item_table.build_table(options, rng, chr_init_data), rng)
+        return options, randomize_item_table.build_table(options, rng, chr_init_data), rng
     
     def get_new_seed(self):
         new_hex_seed = hashlib.sha256(str(self.seed_rng.random()).encode('utf-8')).hexdigest()
@@ -607,18 +603,18 @@ class MainGUI:
         #  Useful for distinguishing letters on-stream, and for those with
         #  impaired vision.
         
-        SUBS_DICT = {'0': 'b','1': 'c', '2': 'f', '3': 'i', '4': 'j', 
+        SUBS_DICT = {'0': 'b', '1': 'c', '2': 'f', '3': 'i', '4': 'j',
          '5': 'k', '6': 'p', '7': 'q', '8': 'r', '9': 'v', 'a': 'x', 
          'b': 'y', 'c': 'z', 'd': '2', 'e': '4', 'f': '5'}
         
         self.seed_string.set(''.join([SUBS_DICT.get(c, '') for c in new_hex_seed]))
-        self.seed_entry.config(fg = self.entry_state.normal_color, font=self.entry_state.normal_font)
+        self.seed_entry.config(fg=self.entry_state.normal_color, font=self.entry_state.normal_font)
         self.entry_state.with_placeholder = False
 
     def seed_changed(self):
         self.limit_seed_length()
         value = self.seed_string.get()
-        self.seed_entry.config(bg = "white")
+        self.seed_entry.config(bg="white")
         
     def is_seed_empty(self):
         seed = self.seed_string.get()
@@ -651,7 +647,6 @@ class MainGUI:
             (options, randomized_data, rng) = self.randomize_data(None)
         (table, randomized_chr_data) = randomized_data
             
-            
         syncnum = self.get_syncnum_string(rng)
         
         result_ilp = table.build_itemlotparam()
@@ -659,7 +654,7 @@ class MainGUI:
         result_slp = table.build_shoplineup()
         slp_binary_export = result_slp.export_as_binary()
         cip_binary_export = randomized_chr_data.export_as_binary()
-        cheat_string = table.build_cheatsheet(show_event_flags = False)
+        cheat_string = table.build_cheatsheet(show_event_flags=False)
         hint_string = table.build_hintsheet()
         seed_info = "Seed: " + str(self.seed_string.get()) + "\n\n" + options.as_string()
         
@@ -693,9 +688,10 @@ class MainGUI:
             self.msg_area.delete(1.0, "end")
             self.msg_area.insert("end", "\n")
             self.msg_area.insert("end", "SUCCESS", "yay")
-            self.msg_area.insert("end", "! The information for this seed has been exported in the directory\n  " + 
-            new_dir_name + "\n\n") 
-            self.msg_area.insert("end", "SyncNum: " + syncnum + "\n  (When racing, all SyncNums should be equal or settings do not match.)\n\n")
+            self.msg_area.insert("end", "! The information for this seed has been exported in the directory\n  {}\n\n".format(new_dir_name))
+            self.msg_area.insert("end", "SyncNum: {}\n  (When racing, all SyncNums should be equal or settings do not match.)\n\n".format(syncnum))
+            self.msg_area.insert("end", 'If you want to easily share this seed and settings with your friends, '
+                                        'right click on this window and select "Copy settings sync". \n\n')
             self.msg_area.insert("end", "Click \"Back\" to begin again, or click \"Quit\" to exit.\n\n")
             self.msg_area.tag_config("yay", foreground="green")
             self.msg_area.config(state="disabled")
@@ -720,7 +716,6 @@ class MainGUI:
         for filepath in paths_to_search:
             normed_path = os.path.normpath(os.path.join(os.getcwd(), filepath))
             if os.path.isfile(normed_path):
-                has_gameparam = True
                 gameparam_filepath = normed_path
                 gameparambak_filepath = normed_path + ".bak"
 
@@ -735,18 +730,18 @@ class MainGUI:
                 
         is_remastered = (self.game_version.get() == rngopts.RandOptGameVersion.REMASTERED)
         
-        if not has_gameparam:
+        if gameparam_filepath is None:
             self.msg_area.config(state="normal")
             self.msg_area.delete(1.0, "end")
             self.msg_area.insert("end", "\n\n")
             self.msg_area.insert("end", "ERROR", "error_red")
-            self.msg_area.insert("end", ": GameParam.parambnd[.dcx] is missing or cannot be opened." + 
-             " Check that this program is in the correct directory and GameParam.parambnd[.dcx] is present and retry.\n\n" +
-             "Click \"Continue\" to continue in seed-information-only mode, or" + 
-             " click \"Quit\" to exit.")
+            self.msg_area.insert("end", ': GameParam.parambnd[.dcx] is missing or cannot be opened.'
+                ' Check that this program is in the correct directory and GameParam.parambnd[.dcx] is present and retry.\n\n'
+                'Click "Continue" to continue in seed-information-only mode, or'
+                ' click "Quit" to exit.')
             self.msg_area.tag_config("error_red", foreground="red")
             self.msg_area.config(state="disabled")
-            self.export_button.config(state = "disabled")
+            self.export_button.config(state="disabled")
             self.lift_msg_area()
         if not has_engmenu and self.set_up_hints.get():
             self.msg_area.config(state="normal")
@@ -783,14 +778,13 @@ class MainGUI:
                 self.msg_area.delete(1.0, "end")
                 self.msg_area.insert("end", "\n\n")
                 self.msg_area.insert("end", "ERROR", "error_red")
-                self.msg_area.insert("end", 
-                 ": " + gp_filename + " is malformed or corrupted and cannot be" + 
-                 " parsed to export randomized items. If possible, restore " + gp_filename + " from a backup copy.\n\n" +
-                 "Click \"Continue\" to continue in seed-information-only mode, or" + 
-                 " click \"Quit\" to exit.")
+                self.msg_area.insert("end",
+                   ': {0} is malformed or corrupted and cannot be parsed to export randomized items. If possible, restore '
+                   '{0} from a backup copy.\n\nClick "Continue" to continue in seed-information-only mode, or '
+                   'click "Quit" to exit.'.format(gp_filename))
                 self.msg_area.tag_config("error_red", foreground="red")
                 self.msg_area.config(state="disabled")
-                self.export_button.config(state = "disabled")
+                self.export_button.config(state="disabled")
                 self.lift_msg_area()
                 return
             
@@ -839,8 +833,7 @@ class MainGUI:
                 if (filepath == "N:\\FRPG\\data\\INTERROOT_win32\\param\\GameParam\\CharaInitParam.param" or
                  filepath == "N:\\FRPG\\data\\INTERROOT_x64\\param\\GameParam\\CharaInitParam.param"):
                     chr_init_data = filedata
-            
-            
+
             # TODO: Implement this system correctly by passing chr_init_data
             #  instead of None to preserve externally modified characters (e.g. another mod).
             #  However, we need some way to determine external modifications
@@ -893,13 +886,13 @@ class MainGUI:
             self.msg_continue_button.lower()
             self.msg_area.config(state="normal")
             self.msg_area.delete(1.0, "end")
-            self.msg_area.insert("end", "\n\n")
             self.msg_area.insert("end", "SUCCESS", "yay")
-            self.msg_area.insert("end", "! " + gp_filename + " has been modified successfully.\n\n" +
-                "The information for this seed has been exported in the directory\n\n  " + 
-                seed_folder + "\n\n")
-            self.msg_area.insert("end", "SyncNum: " + syncnum + "\n  (When racing, all SyncNums should be equal or settings do not match.)\n\n")
-            self.msg_area.insert("end", "Click \"Back\" to begin again, or click \"Quit\" to exit.")
+            self.msg_area.insert("end", "! {} has been modified successfully.\n\n"
+                "The information for this seed has been exported in the directory\n\n  {}\n\n".format(gp_filename, seed_folder))
+            self.msg_area.insert("end", "SyncNum: {}\n  (When racing, all SyncNums should be equal or settings do not match.)\n\n".format(syncnum))
+            self.msg_area.insert("end", 'If you want to easily share this seed and settings with your friends, '
+                                        'right click on this window and select "Copy settings sync". \n\n')
+            self.msg_area.insert("end", 'Click "Back" to begin again, or click "Quit" to exit.')
             self.msg_area.tag_config("yay", foreground="green")
             self.msg_area.config(state="disabled")
             self.msg_area.lift()
@@ -910,8 +903,9 @@ class MainGUI:
         value = self.seed_string.get()
         if len(value) > MAX_SEED_LENGTH: 
             self.seed_string.set(value[:MAX_SEED_LENGTH])
-            
-    def add_placeholder_to(self, entry, placeholder, color="grey", font=None):
+
+    @staticmethod
+    def add_placeholder_to(entry, placeholder, color="grey", font=None):
         normal_color = entry.cget("fg")
         normal_font = entry.cget("font")
         
@@ -919,32 +913,37 @@ class MainGUI:
             font = normal_font
 
         state = Placeholder_State()
-        state.normal_color=normal_color
-        state.normal_font=normal_font
-        state.placeholder_color=color
-        state.placeholder_font=font
+        state.normal_color = normal_color
+        state.normal_font = normal_font
+        state.placeholder_color = color
+        state.placeholder_font = font
         state.placeholder_text = placeholder
-        state.with_placeholder=True
+        state.with_placeholder = True
 
         def on_focusin(event, entry=entry, state=state):
             if state.with_placeholder:
                 entry.delete(0, "end")
-                entry.config(fg = state.normal_color, font=state.normal_font)
+                entry.config(fg=state.normal_color, font=state.normal_font)
                 state.with_placeholder = False
 
         def on_focusout(event, entry=entry, state=state):
             if entry.get() == '':
                 entry.insert(0, state.placeholder_text)
-                entry.config(fg = state.placeholder_color, font=state.placeholder_font)
+                entry.config(fg=state.placeholder_color, font=state.placeholder_font)
                 state.with_placeholder = True
 
+        def disable_placeholder(entry=entry, state=state):
+            entry.config(fg=state.normal_color, font=state.normal_font)
+            state.with_placeholder = False
+
         entry.insert(0, placeholder)
-        entry.config(fg = color, font=font)
+        entry.config(fg=color, font=font)
 
         entry.bind('<FocusIn>', on_focusin, add="+")
         entry.bind('<FocusOut>', on_focusout, add="+")
-        
+
         entry.placeholder_state = state
+        entry.disable_placeholder = disable_placeholder
         return state
         
     def check_for_new_version(self):
@@ -971,6 +970,43 @@ class MainGUI:
         except:
             pass
 
+    def popup_menu_show(self, event):
+        try:
+            self.popup_menu.tk_popup(event.x_root, event.y_root, 0)
+        finally:
+            self.popup_menu.grab_release()
+
+    def settings_string_copy(self):
+        if self.is_seed_empty():
+            self.get_new_seed()
+
+        try:
+            constructed_value = self.settings_string_io.construct()
+            self.root.clipboard_clear()
+            self.root.clipboard_append(constructed_value)
+        except InvalidValueError:
+            tkMB.showerror('Error copying data', 'Invalid or incomplete settings detected, cannot copy')
+        except Exception as e:
+            logging.exception('Could not copy settings sync string to clipboard: {}'.format(e))
+            tkMB.showerror('Error copying data', 'Could not copy data to clipboard')
+
+    def settings_string_paste(self):
+        try:
+            clipboard = self.root.clipboard_get()
+            if not isinstance(clipboard, str) or len(clipboard) > 512:
+                raise ValueError
+
+            if not self.settings_string_io.parse(clipboard):
+                raise Exception
+            tkMB.showinfo('Yay!', 'Settings applied')
+
+        except IncompatibleVersionError:
+            tkMB.showerror('Error applying settings', 'Data from an incompatible version in the clipboard')
+
+        except Exception as e:
+            logging.exception('Could not parsesettings sync string from clipboard: {}'.format(e))
+            tkMB.showerror('Error applying settings', 'Invalid data in the clipboard')
+
     def show_error(self, text):
         self.msg_area.config(state="normal")
         self.msg_area.delete(1.0, "end")
@@ -994,4 +1030,3 @@ if __name__ == "__main__":
     logging.basicConfig(stream=sys.stdout, level=logging.WARN)
     maingui = MainGUI()
     maingui.root.mainloop()
-    
