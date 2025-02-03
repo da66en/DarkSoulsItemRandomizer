@@ -17,7 +17,7 @@ KEY_NAMES = ["lordvessel", "key_to_the_seal", "blighttown_key",
  "peculiar_doll", "broken_pendant", "crest_key", "crest_of_artorias",
  "residence_key", "dark_ember", "divine_ember", "enchanted_ember",
  "large_divine_ember", "large_flame_ember", "chaos_flame_ember", 
- "very_large_ember", "large_magic_ember", "crystal_ember", "cast_light",
+ "very_large_ember", "large_magic_ember", "crystal_ember", "sunlight_maggot",
  "lord_soul_shard_seath", "lord_soul_shard_four_kings", 
  "lord_soul_bed_of_chaos", "lord_soul_nito"
 ]
@@ -236,9 +236,9 @@ CONNECTIONS = {
  AREA.OOLACILE_TOWNSHIP: {
     "none": [AREA.ROYAL_WOOD, AREA.CHASM_OF_THE_ABYSS],
     "crest_key": [AREA.KALAMEET_FIGHT],
-    "cast_light": [AREA.OOLACILE_HIDDEN]},
+    "sunlight_maggot": [AREA.OOLACILE_HIDDEN]},
  AREA.OOLACILE_HIDDEN: {
-    "cast_light": [AREA.OOLACILE_TOWNSHIP]},
+    "sunlight_maggot": [AREA.OOLACILE_TOWNSHIP]},
  AREA.KALAMEET_FIGHT: {
     "none": [AREA.ROYAL_WOOD]},
  AREA.CHASM_OF_THE_ABYSS: {

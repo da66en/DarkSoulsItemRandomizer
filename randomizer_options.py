@@ -80,10 +80,29 @@ class RandOptGameVersion:
         else:
             return ""
 
+class RandOptLordvesselLocation:
+    GWYNEVERE = 'Lordvessel @ Gwynevere'
+    RANDOMIZED = 'Lordvessel Randomized'
+    FIRELINK = 'Lordvessel @ Firelink'
+
+    @classmethod
+    def as_values(cls):
+        return [cls.GWYNEVERE, cls.RANDOMIZED, cls.FIRELINK]
+    
+    @classmethod
+    def get_default(cls):
+        return cls.RANDOMIZED
+    
+    @classmethod 
+    def verify(cls, check_value):
+        if check_value not in cls.as_values():
+            return cls.get_default()
+        return check_value
+
 class RandomizerOptions:
     def __init__(self, difficulty, fashion_souls, key_placement, 
      use_lordvessel, use_lord_souls, soul_items_diff, start_items_diff,
-     game_version, randomize_npc_armor):
+     game_version, randomize_npc_armor, ascend_weapons, keys_not_in_dlc):
          self.difficulty = difficulty
          self.fashion_souls = fashion_souls
          self.key_placement = key_placement
@@ -93,6 +112,8 @@ class RandomizerOptions:
          self.start_items_diff = start_items_diff
          self.game_version = game_version
          self.randomize_npc_armor = randomize_npc_armor
+         self.ascend_weapons = ascend_weapons
+         self.keys_not_in_dlc = keys_not_in_dlc
          
     def bool_option_to_string(self, b):
         if b:
@@ -111,5 +132,7 @@ class RandomizerOptions:
         return_string += "  Soul Items: " + RandOptSoulItemsDifficulty.as_string(self.soul_items_diff) + "\n"
         return_string += "  Starting Items: " + RandOptStartItemsDifficulty.as_string(self.start_items_diff) + "\n"
         return_string += "  Laundromat Mixup: " + self.bool_option_to_string(self.randomize_npc_armor) + "\n"
+        return_string += "  Ascend Weapons: " + self.bool_option_to_string(self.ascend_weapons) + "\n"
+        return_string += "  Keys in DLC: " + self.bool_option_to_string(not self.keys_not_in_dlc) + "\n"
         return return_string
         
