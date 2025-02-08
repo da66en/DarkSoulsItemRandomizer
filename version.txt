@@ -1,6 +1,7 @@
-unreleased (0.6.6)
+0.7.0
 - Adds 'Revert to Vanilla' (AzetinnitezA)
 - Adds copy to clipboard and paste from clipboard seed and settings on right mouse click (eaglevis)
+- Fix for 'Seek Guidance' not working (da66en)
 
 0.6.3
 - Adds debug file output for in-game hints. (AbscondWithAPie)

@@ -32,7 +32,7 @@ INI_FILE = "randomizer.ini"
 
 MAX_SEED_LENGTH = 64
 
-VERSION_NUM = "0.6.6"
+VERSION_NUM = "0.7.0"
 # only add versions compatible RNG-wise, IE when fixing GUI stuff
 COMPATIBLE_VERSIONS = [VERSION_NUM, ]
 
@@ -413,7 +413,7 @@ class MainGUI:
         self.msg_area.config(state="normal")
         self.msg_area.delete(1.0, "end")
         self.msg_area.insert("end", "\n\n")
-        self.msg_area.insert("end", "\tDark Soul Randomizer, developers:\n\n")
+        self.msg_area.insert("end", "\tDark Soul Item Randomizer, developers:\n\n")
         self.msg_area.insert("end", "\t\thotpocketremix\n")
         self.msg_area.insert("end", "\t\tcaerulius\n")
         self.msg_area.insert("end", "\t\tforstycup\n")
