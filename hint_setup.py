@@ -40,29 +40,43 @@ HINT_LOCATIONS = {
 }
 
 TRASH_HINTS = {
-    "Lautrec should not be trusted",
-    "Do NOT feed the giant snake",
-    "Clod was here",
-    "You sorry Fool, you could not be the chosen one",
-    "Bearer of the curse, seek seek lest...",
-    "Chosen undead, please remember to link the fires",
-    "Ashen one, the trees here are very treacherous",
-    "Remember to check in on your local crestfallen friends",
-    "Humanity increases your item find...",
-    "Majula is on the way of the Chosen Undead",
-    "New Londo is very spooky",
-    "Please be kind to the local dog population",
-    "Would Giant Dad be proud right now",
-    "Chosen Undead seek a way out",
-    "Consider visiting your local Poison Swamp",
-    "Please avoid standing in the lava without protection",
-    "Help control the local spider wife population",
-    "Ring two bells to win a prize (giant snake)",
-    "Local clerics should head to the catacombs for treasure!",
-    "Tales tell of a gigantic king of rats, somewhere under the city",
-    "A man yells for help below the city, but your INT is too low to hear him",
-    "Do NOT touch the fluffy tail",
-    "Something's missing, the lordvessel?"
+    "That's what she said.",
+    "Right you are, Kenny!",
+    "It's a secret to everybody.",
+    "Grumble grumble grumble...",
+    "It is dangerous to go alone!",
+    "Have you tried turning it off and back on again?",
+    "The right man in the wrong place can make all the difference in the world.",
+    "I watched C-beams glitter in the dark near the Tannhäuser Gate",
+    "55 Burgers, 55 Fries, 55 Tacos, 55 Pies...",
+    "Rip and Tear until it is done.",
+    "These pretzels are making me thirsty.",
+    "Stay awhile and listen.",
+    "Thou hast lost an eighth.",
+    "Remember your mantra.",
+    "I used to be an adventurer like you. Then I took an arrow in the knee...",
+    "Bingpot!",
+    "Did I do that?",
+    "Rise and shine Mr. Freeman.",
+    "We are the things that were and shall be again!",
+    "Hail to the king, baby!",
+    "Never half-ass two things. Whole-ass one thing.",
+    "Treat yo'self.",
+    "Let’s-a-go!",
+    "What's a Paladin?",
+    "Adjust gamma until picture on the left is barely visible.",
+    "Darmok and Jalad... at Tanagra.",
+    "Some days, you just can't get rid of a bomb!",
+    "Bill, strange things are afoot at the Circle K.",
+    "No matter where you go, there you are.",
+    "Do you know of the Klingon proverb that tells us revenge is a dish that is best served cold?",
+    "Ray, if someone asks you if you're a god, you say YES!",
+    "Hokey religions and ancient weapons are no substitute for a good blaster at your side, kid.",
+    "Worst. Seed. Ever.",
+    "Goonies never say die.",
+    "Would you say I have a plethora of pinatas?",
+    "Never go in against a Sicilian when death is on the line!",
+    "Kneel before Zod."
 }
 
 USEFUL_LOCATIONS = {
@@ -261,7 +275,7 @@ class HintBuilder:
         key_items = rng.sample(self.key_items, 6)
         useful_items = rng.sample(self.useful_items, 4)
         useful_locations = rng.sample(self.useful_locations, 6)
-        trash_hints = rng.sample(TRASH_HINTS, 3)
+        trash_hints = rng.sample(list(TRASH_HINTS), 3)
 
         self.hint_list = big_keys + big_keys + key_items + key_items + useful_items + useful_locations + trash_hints + trash_hints
 

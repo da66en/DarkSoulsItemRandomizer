@@ -73,7 +73,7 @@ Eager Smiths: If active, weapons capable of upgrading along the various ember pa
 
 No DLC: If active, key items will NOT be in Painted World or Artorias of the Abyss DLC locations.  Also keys needed for those areas will not be placed outside of these areas, to prevent you from getting keys in sections that aren't needed.
 
-Seek Guidance Help: If active, useful hints replace the dev messages that appear when using Seek Guidance.
+Seek Guidance Help: If active, useful hints replace the dev messages that appear when using the Seek Guidance miracle.  Petrus at the Firelink Shrine has the Seek Guidance miracle and a talisman for sale. 
 
 **Race Mode Possible Key Locations**:
 
@@ -365,6 +365,8 @@ Seek Guidance Help: If active, useful hints replace the dev messages that appear
        some keys.
 
 **Seek Guidance help:**
+
+Don't forget that Petrus at the Firelink Shrine has the Seek Guidance miracle and a talisman for sale. 
 
 *The hint rules are as follows:*
 
