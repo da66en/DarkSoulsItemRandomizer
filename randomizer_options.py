@@ -3,69 +3,95 @@ class RandOptDifficulty:
     EASY = 0
     MEDIUM = 1
     HARD = 2
+
+    NUM = 3
+
+    strings = ['Fair', 'Unfair', 'Very Unfair']
+
+    @classmethod
+    def as_strings(cls):
+        return cls.strings
     
     @classmethod
     def as_string(cls, diff):
-        if diff == cls.EASY:
-            return "Fair"
-        elif diff == cls.MEDIUM:
-            return "Unfair"
-        elif diff == cls.HARD:
-            return "Very Unfair"
-        else:
-            return ""
+        if (diff >= cls.NUM):
+            return None #error
+        return cls.strings[diff]
+    
+    @classmethod
+    def from_string(cls, str):
+        return cls.strings.index(str)
 
 class RandOptKeyDifficulty:
     LEAVE_ALONE = 0
     RANDOMIZE = 1
     RACE_MODE = 2
     SPEEDRUN_MODE = 3
+
+    NUM = 4
+
+    strings = ['Not Shuffled', 'Shuffled', 'Race Mode', 'Race Mode +']
+    
+    @classmethod
+    def as_strings(cls):
+        return cls.strings
     
     @classmethod
     def as_string(cls, diff):
-        if diff == cls.LEAVE_ALONE:
-            return "Not Shuffled"
-        elif diff == cls.RANDOMIZE:
-            return "Shuffled"
-        elif diff == cls.RACE_MODE:
-            return "Race Mode"
-        elif diff == cls.SPEEDRUN_MODE:
-            return "Race Mode +"
-        else:
-            return ""
+        if (diff >= cls.NUM):
+            return None #error
+        return cls.strings[diff]
+    
+    @classmethod
+    def from_string(cls, str):
+        return cls.strings.index(str)
     
 class RandOptStartItemsDifficulty:
     SHIELD_AND_1H = 0
     SHIELD_AND_2H = 1
     COMBINED_POOL_AND_2H = 2
+
+    NUM = 3
+
+    strings = ['Shield & 1H Weapon', 'Shield & 1/2H Weapon', 'Shield/Weapon & Weapon']
+    
+    @classmethod
+    def as_strings(cls):
+        return cls.strings
     
     @classmethod
     def as_string(cls, diff):
-        if diff == cls.SHIELD_AND_1H:
-            return "Shield & 1H Weapon"
-        elif diff == cls.SHIELD_AND_2H:
-            return "Shield & 1/2H Weapon"
-        elif diff == cls.COMBINED_POOL_AND_2H:
-            return "Shield/Weapon & Weapon"
-        else:
-            return ""
+        if (diff >= cls.NUM):
+            return None #error
+        return cls.strings[diff]
+    
+    @classmethod
+    def from_string(cls, str):
+        return cls.strings.index(str)
             
     
 class RandOptSoulItemsDifficulty:
     SHUFFLE = 0
     CONSUMABLE = 1
     TRANSPOSE = 2
+
+    NUM = 3
+
+    strings = ['Shuffled', 'Replaced', 'Transposed']
+    
+    @classmethod
+    def as_strings(cls):
+        return cls.strings
     
     @classmethod
     def as_string(cls, diff):
-        if diff == cls.SHUFFLE:
-            return "Shuffled"
-        elif diff == cls.CONSUMABLE:
-            return "Replaced"
-        elif diff == cls.TRANSPOSE:
-            return "Transposed"
-        else:
-            return ""
+        if (diff >= cls.NUM):
+            return None #error
+        return cls.strings[diff]
+    
+    @classmethod
+    def from_string(cls, str):
+        return cls.strings.index(str)
             
 class RandOptGameVersion:
     PTDE = "DARK SOULS: Prepare To Die Edition"
@@ -81,12 +107,12 @@ class RandOptGameVersion:
             return ""
 
 class RandOptLordvesselLocation:
-    GWYNEVERE = 'Lordvessel @ Gwynevere'
-    RANDOMIZED = 'Lordvessel Randomized'
-    FIRELINK = 'Lordvessel @ Firelink'
+    GWYNEVERE = 'Gwynevere'
+    RANDOMIZED = 'Randomized'
+    FIRELINK = 'Firelink'
 
     @classmethod
-    def as_values(cls):
+    def as_strings(cls):
         return [cls.GWYNEVERE, cls.RANDOMIZED, cls.FIRELINK]
     
     @classmethod
@@ -95,8 +121,8 @@ class RandOptLordvesselLocation:
     
     @classmethod 
     def verify(cls, check_value):
-        if check_value not in cls.as_values():
-            return cls.get_default()
+        if check_value not in cls.as_strings():
+            return cls.RANDOMIZED   #something bad happened - use default value
         return check_value
 
 class RandomizerOptions:

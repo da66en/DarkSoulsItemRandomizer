@@ -1,6 +1,11 @@
 # TODO: is lightning spear, great lightening spear and sunlight spear being shuffled in?
 # TODO: don't let sunlight_maggot be tomb of giants
 # TODO: add option to remove black knight weapons
+# TODO: seek guidance help doesn't use seed
+# TODO: seek guidance help doesn't affect SyncNum
+# TODO: don't place online items (cracked red skull, broken finger, soapstones)
+# TODO: seek guidance don't say where lordvessel is if we forced it's placement
+# TODO: add sync settings and sync num to seed_info.txt
 
 import tkinter as tk
 import tkinter.ttk as ttk
@@ -32,7 +37,7 @@ INI_FILE = "randomizer.ini"
 
 MAX_SEED_LENGTH = 64
 
-VERSION_NUM = "0.7.0"
+VERSION_NUM = "0.7.1"
 # only add versions compatible RNG-wise, IE when fixing GUI stuff
 COMPATIBLE_VERSIONS = [VERSION_NUM, ]
 
@@ -71,19 +76,19 @@ DESC_DICT = {
             "  The weapon(s) may need to be two-handed to be usable with base stats.\n")},
     "fashion": {True: "* Armor sets ARE NOT kept together during shuffling.\n   Players will typically need to mix-and-match armor pieces.\n",
         False: "* Armor sets ARE kept together during shuffling.\n   Players will be able to find full sets of armor at once.\n"},
-    "npc_armor": {True: "* NPCs wear randomly chosen armor instead of their normal sets.\n   If Fashion Souls is on, NPCs will also mix-and-match their armor.\n\n",
-        False: "* NPCs will wear their normal sets of armor.\n   NPCs have their familiar look, weight class and defense stats.\n\n"},
+    "npc_armor": {True: "* NPCs wear randomly chosen armor instead of their normal sets.\n   If Fashion Souls is on, NPCs will also mix-and-match their armor.\n",
+        False: "* NPCs will wear their normal sets of armor.\n   NPCs have their familiar look, weight class and defense stats.\n"},
     "use_lv": {rngopts.RandOptLordvesselLocation.RANDOMIZED: "* The Lordvessel IS included in the randomized keys.\n   Difficulty ranges from much easier (in Firelink) to harder (in TotG).\n",
         rngopts.RandOptLordvesselLocation.GWYNEVERE: "* The Lordvessel IS NOT included in the randomized keys.\n   Difficulty is standard. Lordvessel is given by Gwynevere in Anor Londo.\n",
         rngopts.RandOptLordvesselLocation.FIRELINK: "* The Lordvessel is at Firelink Shrine.\n   Difficulty is easy.\n"},
     "use_lord_souls": {True: "* The 4 Lord Souls ARE included in the randomized keys.\n   Difficulty ranges from much easier to much harder.\n", 
         False: "* The 4 Lord Souls ARE NOT included in the randomized keys.\n   Difficulty is standard. Lord Souls are dropped by their normal bosses.\n"},
-    "ascend_weapons": {True: "* Normal weapons have a 25% chance to be ascended with a random ember.\n\n",
-        False: "* Normal weapons drop as expected.\n\n"},
-    "set_up_hints": {True: "* The dev messages visibile with Seek Guidance will have \n   hints automatically added in.", 
-        False: "* There are no hints that are added to the seed via Seek Guidance."},
-    "keys_not_in_dlc": {True: "* Key items will NOT be in DLC (Painted World, Artorias of the Abyss).\n\n",
-        False: "* Key items can be in DLC (Painted World, Artorias of the Abyss).\n\n"}
+    "ascend_weapons": {True: "* Normal weapons have a 25% chance to be ascended with a random ember.\n",
+        False: "* Normal weapons drop as expected.\n"},
+    "set_up_hints": {True: "* The dev messages visibile with Seek Guidance will have \n   hints automatically added in.\n", 
+        False: "* There are no hints that are added to the seed via Seek Guidance.\n\n"},
+    "keys_not_in_dlc": {True: "* Key items will NOT be in DLC (Painted World, Artorias of the Abyss).\n",
+        False: "* Key items can be in DLC (Painted World, Artorias of the Abyss).\n"}
 }
 DESC_ORDER = ["diff", "key_diff", "souls_diff", "keys_not_in_dlc", "start_items", "fashion", "npc_armor", "use_lv", "use_lord_souls", "ascend_weapons", "set_up_hints"]
 
@@ -122,7 +127,6 @@ class DescriptionState:
         self.text_area.tag_config(DescriptionState.EMPH, foreground="red2")
         self.text_area.config(state="disabled")
 
-
 class MainGUI:
     def __init__(self):
         init_options = ini_parser.get_values_from_ini(INI_FILE, section="DEFAULT")     #load ini file 
@@ -142,7 +146,6 @@ class MainGUI:
         self.seed_entry = tk.Entry(self.root, font="TkFixedFont", textvariable=self.seed_string, width=70)
         self.entry_state = self.add_placeholder_to(self.seed_entry, 'Type a seed (or leave blank for a random seed)')
         self.seed_entry.grid(row=0, column=1, columnspan=2, ipady=2, ipadx=1, padx=2, sticky='EW')
-        #tk.Label(self.root, text="Made by HotPocketRemix      ").grid(row=0, column=3, columnspan=2, sticky='E', padx=2)
         self.sellout_button = tk.Button(self.root, text="?", bg="pale goldenrod",
          padx=2, pady=2, command=self.lift_sellout_area)
         self.sellout_button.grid(row=0, column=4, padx=2, sticky='E')
@@ -164,16 +167,17 @@ class MainGUI:
         self.game_version_menu.config(width=30)
         self.game_version_menu.grid(row=1, column=2, sticky='EW', padx=2)
         
-        self.msg_area = tk.Text(self.root, width=76, height=22, state="disabled", background=self.root.cget('background'), wrap="word")
-        self.msg_area.grid(row=2, column=0, columnspan=3, rowspan=9, padx=2, pady=2)
+        self.msg_area = tk.Text(self.root, width=76, height=22, 
+                                state="disabled", background=self.root.cget('background'), wrap="word")
+        self.msg_area.grid(row=2, column=0, columnspan=3, rowspan=10, padx=2, pady=2, sticky='NS')
         self.msg_quit_button = tk.Button(self.root, text="Quit", command=self.quit_button)
         self.msg_quit_button.grid(row=9, column=1, columnspan=2, rowspan=2)
         self.msg_continue_button = tk.Button(self.root, text="Continue", command=self.continue_button)
         self.msg_continue_button.grid(row=7, column=1, columnspan=2, rowspan=2)
         self.back_button = tk.Button(self.root, text="Back", command=self.back_button)
         self.back_button.grid(row=7, column=1, columnspan=2, rowspan=2)
-        self.desc_area = tk.Text(self.root, width=76, height=22, state="disabled", background=self.root.cget('background'), wrap="word")
-        self.desc_area.grid(row=2, column=0, columnspan=3, rowspan=12, padx=2, pady=2)
+        self.desc_area = tk.Text(self.root, width=76, height=19, state="disabled", background=self.root.cget('background'), wrap="word")
+        self.desc_area.grid(row=2, column=0, columnspan=3, rowspan=10, padx=2, pady=2)
         
         self.save_options = tk.BooleanVar()
         self.save_options.set(False)
@@ -182,166 +186,152 @@ class MainGUI:
          width=20, anchor=tk.W)
         self.save_options_check.grid(row=1, column=3, columnspan=2)
 
-        self.diff_frame = tk.LabelFrame(text="Difficulty:")
-        self.diff_frame.grid(row=2, column=3, rowspan=1, sticky='NS', padx=2)
+        self.diff_frame = tk.LabelFrame(text="Difficulty:", bd=0) #XYZ
+        self.diff_frame.grid(row=2, column=3, sticky='NS', padx=2)
+        #--
         self.diff = tk.IntVar()
+        self.diff_as_string = tk.StringVar()
         self.diff.set(ini_parser.get_option_value(init_options, "difficulty"))
+        self.diff_as_string.set(rngopts.RandOptDifficulty.as_string(self.diff.get()))
         self.diff.trace('w', lambda name, index, mode: self.update())
-        self.diff_rbutton1 = tk.Radiobutton(self.diff_frame, 
-         text=rngopts.RandOptDifficulty.as_string(rngopts.RandOptDifficulty.EASY), 
-         variable=self.diff, value=rngopts.RandOptDifficulty.EASY, width=10, anchor=tk.W)
-        self.diff_rbutton2 = tk.Radiobutton(self.diff_frame, 
-         text=rngopts.RandOptDifficulty.as_string(rngopts.RandOptDifficulty.MEDIUM), 
-         variable=self.diff, value=rngopts.RandOptDifficulty.MEDIUM, width=10, anchor=tk.W)
-        self.diff_rbutton3 = tk.Radiobutton(self.diff_frame, 
-         text=rngopts.RandOptDifficulty.as_string(rngopts.RandOptDifficulty.HARD), 
-         variable=self.diff, value=rngopts.RandOptDifficulty.HARD, width=10, anchor=tk.W)
-        self.diff_rbutton1.grid(row=0, column=0, sticky='W')
-        self.diff_rbutton2.grid(row=1, column=0, sticky='W')
-        self.diff_rbutton3.grid(row=2, column=0, sticky='W')
-        self.setup_hover_events(self.diff_rbutton1, {"diff": rngopts.RandOptDifficulty.EASY})
-        self.setup_hover_events(self.diff_rbutton2, {"diff": rngopts.RandOptDifficulty.MEDIUM})
-        self.setup_hover_events(self.diff_rbutton3, {"diff": rngopts.RandOptDifficulty.HARD})
+        self.gui_diff = ttk.Combobox(self.diff_frame, 
+                                            values=rngopts.RandOptDifficulty.as_strings(),
+                                            textvariable=self.diff_as_string,
+                                            width=13,
+                                            state="readonly")
+        self.gui_diff.bind("<<ComboboxSelected>>", lambda _: self.diff.set(rngopts.RandOptDifficulty.from_string(self.diff_as_string.get())))
+        self.gui_diff.grid(row=0, column=0, sticky='W')
+        self.setup_hover_events(self.gui_diff, {"diff": None}, no_emph = True)
+       
         
-        #was rowspan=4
-        self.key_diff_frame = tk.LabelFrame(text="Key Placement:")
-        self.key_diff_frame.grid(row=3, column=3, rowspan=5, sticky='NS', padx=2)
+        self.key_diff_frame = tk.LabelFrame(text="Key Placement:", bd=0)  #XYZ
+        self.key_diff_frame.grid(row=3, column=3, sticky='NS', padx=2)
+        #--
         self.key_diff = tk.IntVar()
+        self.key_diff_as_string = tk.StringVar()
         self.key_diff.set(ini_parser.get_option_value(init_options, "key_placement"))
+        self.key_diff_as_string.set(rngopts.RandOptKeyDifficulty.as_string(self.key_diff.get()))
         self.key_diff.trace('w', lambda name, index, mode: self.update())
-        self.key_diff_rbutton1 = tk.Radiobutton(self.key_diff_frame, 
-         text=rngopts.RandOptKeyDifficulty.as_string(rngopts.RandOptKeyDifficulty.LEAVE_ALONE), 
-         variable=self.key_diff, value=rngopts.RandOptKeyDifficulty.LEAVE_ALONE, width=10, anchor=tk.W)
-        self.key_diff_rbutton2 = tk.Radiobutton(self.key_diff_frame, 
-         text=rngopts.RandOptKeyDifficulty.as_string(rngopts.RandOptKeyDifficulty.RANDOMIZE), 
-         variable=self.key_diff, value=rngopts.RandOptKeyDifficulty.RANDOMIZE, width=10, anchor=tk.W)
-        self.key_diff_rbutton3 = tk.Radiobutton(self.key_diff_frame, 
-         text=rngopts.RandOptKeyDifficulty.as_string(rngopts.RandOptKeyDifficulty.RACE_MODE), 
-         variable=self.key_diff, value=rngopts.RandOptKeyDifficulty.RACE_MODE, width=10, anchor=tk.W)
-        self.key_diff_rbutton4 = tk.Radiobutton(self.key_diff_frame, 
-         text=rngopts.RandOptKeyDifficulty.as_string(rngopts.RandOptKeyDifficulty.SPEEDRUN_MODE), 
-         variable=self.key_diff, value=rngopts.RandOptKeyDifficulty.SPEEDRUN_MODE, width=10, anchor=tk.W)
-        self.key_diff_rbutton1.grid(row=0, column=0, sticky='W')
-        self.key_diff_rbutton2.grid(row=1, column=0, sticky='W')
-        self.key_diff_rbutton3.grid(row=2, column=0, sticky='W')
-        self.key_diff_rbutton4.grid(row=3, column=0, sticky='W')
-        self.setup_hover_events(self.key_diff_rbutton1, {"key_diff": rngopts.RandOptKeyDifficulty.LEAVE_ALONE, "use_lv": rngopts.RandOptLordvesselLocation.get_default(), "use_lord_souls": False})
-        self.setup_hover_events(self.key_diff_rbutton2, {"key_diff": rngopts.RandOptKeyDifficulty.RANDOMIZE})
-        self.setup_hover_events(self.key_diff_rbutton3, {"key_diff": rngopts.RandOptKeyDifficulty.RACE_MODE})
-        self.setup_hover_events(self.key_diff_rbutton4, {"key_diff": rngopts.RandOptKeyDifficulty.SPEEDRUN_MODE, "diff": rngopts.RandOptDifficulty.EASY})
-        self.keys_not_in_dlc = tk.BooleanVar()
-        self.keys_not_in_dlc.set(ini_parser.get_option_value(init_options, "keys_not_in_dlc"))
-        self.keys_not_in_dlc.trace('w', lambda name, index, mode: self.update())
-        self.keys_not_in_dlc_check = tk.Checkbutton(self.key_diff_frame, text="No DLC", 
-         variable=self.keys_not_in_dlc, onvalue=True, offvalue=False,   #, padx=2,
-         width=10, anchor=tk.W)
-        self.keys_not_in_dlc_check.grid(row=4, column=0, sticky='W')
-        self.setup_hover_events(self.keys_not_in_dlc_check, {"keys_not_in_dlc": None}, no_emph = True)
+        self.gui_key_diff = ttk.Combobox(self.key_diff_frame, 
+                                            values=rngopts.RandOptKeyDifficulty.as_strings(),
+                                            textvariable=self.key_diff_as_string,
+                                            width=13,
+                                            state="readonly")
+        self.gui_key_diff.bind("<<ComboboxSelected>>", lambda _: self.key_diff.set(rngopts.RandOptKeyDifficulty.from_string(self.key_diff_as_string.get())))
+        self.gui_key_diff.grid(row=0, column=0, sticky='W')
+        self.setup_hover_events(self.gui_key_diff, {"key_diff": None}, no_emph = True)
 
-        # was rowspan=5 row=7
-        self.soul_frame = tk.LabelFrame(text="Soul Items:")
-        self.soul_frame.grid(row=8, column=3, rowspan=4, sticky='NS', padx=2, pady=2)
+        self.soul_frame = tk.LabelFrame(text="Soul Items:", bd=0) #XYZ
+        self.soul_frame.grid(row=4, column=3, sticky='NS', padx=2, pady=2)
+        #--
         self.soul_diff = tk.IntVar()
+        self.soul_diff_as_string = tk.StringVar()
         self.soul_diff.set(ini_parser.get_option_value(init_options, "soul_items_diff"))
+        self.soul_diff_as_string.set(rngopts.RandOptSoulItemsDifficulty.as_string(self.soul_diff.get()))
         self.soul_diff.trace('w', lambda name, index, mode: self.update())
-        self.soul_diff_rbutton1 = tk.Radiobutton(self.soul_frame, 
-         text=rngopts.RandOptSoulItemsDifficulty.as_string(rngopts.RandOptSoulItemsDifficulty.SHUFFLE), 
-         variable=self.soul_diff, value=rngopts.RandOptSoulItemsDifficulty.SHUFFLE, width=10, anchor=tk.W)
-        self.soul_diff_rbutton2 = tk.Radiobutton(self.soul_frame, 
-         text=rngopts.RandOptSoulItemsDifficulty.as_string(rngopts.RandOptSoulItemsDifficulty.CONSUMABLE), 
-         variable=self.soul_diff, value=rngopts.RandOptSoulItemsDifficulty.CONSUMABLE, width=10, anchor=tk.W)
-        self.soul_diff_rbutton3 = tk.Radiobutton(self.soul_frame, 
-         text=rngopts.RandOptSoulItemsDifficulty.as_string(rngopts.RandOptSoulItemsDifficulty.TRANSPOSE), 
-         variable=self.soul_diff, value=rngopts.RandOptSoulItemsDifficulty.TRANSPOSE, width=10, anchor=tk.W)
-        self.soul_diff_rbutton1.grid(row=0, column=0, sticky='W')
-        self.soul_diff_rbutton2.grid(row=1, column=0, sticky='W')
-        self.soul_diff_rbutton3.grid(row=2, column=0, sticky='W')
-        self.setup_hover_events(self.soul_diff_rbutton1, {"souls_diff": rngopts.RandOptSoulItemsDifficulty.SHUFFLE})
-        self.setup_hover_events(self.soul_diff_rbutton2, {"souls_diff": rngopts.RandOptSoulItemsDifficulty.CONSUMABLE})
-        self.setup_hover_events(self.soul_diff_rbutton3, {"souls_diff": rngopts.RandOptSoulItemsDifficulty.TRANSPOSE})
+        self.gui_soul_diff = ttk.Combobox(self.soul_frame, 
+                                            values=rngopts.RandOptSoulItemsDifficulty.as_strings(),
+                                            textvariable=self.soul_diff_as_string,
+                                            width=13,
+                                            state="readonly")
+        self.gui_soul_diff.bind("<<ComboboxSelected>>", lambda _: self.soul_diff.set(rngopts.RandOptSoulItemsDifficulty.from_string(self.soul_diff_as_string.get())))
+        self.gui_soul_diff.grid(row=0, column=0, sticky='W')
+        self.setup_hover_events(self.gui_soul_diff, {"souls_diff": None}, no_emph = True)
 
-        self.start_items_frame = tk.LabelFrame(text="Starting Items:")
+        self.use_lordvessel_frame = tk.LabelFrame(text="Lordvessel:", bd=0) #XYZ
+        self.use_lordvessel_frame.grid(row=5, column=3, sticky='NS', padx=2, pady=2)
+        #--
+        self.use_lordvessel = tk.StringVar()
+        self.use_lordvessel.set(rngopts.RandOptLordvesselLocation.verify(ini_parser.get_option_value(init_options, "use_lordvessel")))
+        self.use_lordvessel.trace('w', lambda name, index, mode: self.update())
+        self.gui_lordvessel = ttk.Combobox(self.use_lordvessel_frame, 
+                                            textvariable=self.use_lordvessel,
+                                            values=rngopts.RandOptLordvesselLocation.as_strings(),
+                                            width=13,
+                                            state="readonly")
+        self.gui_lordvessel.grid(row=0, column=0, sticky='W')
+        self.setup_hover_events(self.gui_lordvessel, {"use_lv": None}, no_emph = True)
+
+        self.start_items_frame = tk.LabelFrame(text="Starting Items:", bd=0)  #wxy
         self.start_items_frame.grid(row=2, column=4, sticky='NS', padx=2)
+        #--
         self.start_items_diff = tk.IntVar()
+        self.start_items_diff_as_string = tk.StringVar()
         self.start_items_diff.set(ini_parser.get_option_value(init_options, "start_items_diff"))
+        self.start_items_diff_as_string.set(rngopts.RandOptStartItemsDifficulty.as_string(self.start_items_diff.get()))
         self.start_items_diff.trace('w', lambda name, index, mode: self.update())
-        self.start_items_rbutton1 = tk.Radiobutton(self.start_items_frame, 
-         text=rngopts.RandOptStartItemsDifficulty.as_string(rngopts.RandOptStartItemsDifficulty.SHIELD_AND_1H), 
-         variable=self.start_items_diff, value=rngopts.RandOptStartItemsDifficulty.SHIELD_AND_1H, width=20, anchor=tk.W)
-        self.start_items_rbutton2 = tk.Radiobutton(self.start_items_frame, 
-         text=rngopts.RandOptStartItemsDifficulty.as_string(rngopts.RandOptStartItemsDifficulty.SHIELD_AND_2H), 
-         variable=self.start_items_diff, value=rngopts.RandOptStartItemsDifficulty.SHIELD_AND_2H, width=20, anchor=tk.W)
-        self.start_items_rbutton3 = tk.Radiobutton(self.start_items_frame, 
-         text=rngopts.RandOptStartItemsDifficulty.as_string(rngopts.RandOptStartItemsDifficulty.COMBINED_POOL_AND_2H), 
-         variable=self.start_items_diff, value=rngopts.RandOptStartItemsDifficulty.COMBINED_POOL_AND_2H, width=20, anchor=tk.W)
-        self.start_items_rbutton1.grid(row=0, column=0, sticky='W')
-        self.start_items_rbutton2.grid(row=1, column=0, sticky='W')
-        self.start_items_rbutton3.grid(row=2, column=0, sticky='W')
-        self.setup_hover_events(self.start_items_rbutton1, {"start_items": rngopts.RandOptStartItemsDifficulty.SHIELD_AND_1H})
-        self.setup_hover_events(self.start_items_rbutton2, {"start_items": rngopts.RandOptStartItemsDifficulty.SHIELD_AND_2H})
-        self.setup_hover_events(self.start_items_rbutton3, {"start_items": rngopts.RandOptStartItemsDifficulty.COMBINED_POOL_AND_2H})
+        self.gui_start_items_diff = ttk.Combobox(self.start_items_frame, 
+                                            values=rngopts.RandOptStartItemsDifficulty.as_strings(),
+                                            textvariable=self.start_items_diff_as_string,
+                                            width=25,
+                                            state="readonly")
+        self.gui_start_items_diff.bind("<<ComboboxSelected>>", lambda _: self.start_items_diff.set(rngopts.RandOptStartItemsDifficulty.from_string(self.start_items_diff_as_string.get())))
+        self.gui_start_items_diff.grid(row=0, column=0, sticky='W')
+        self.setup_hover_events(self.gui_start_items_diff, {"start_items": None}, no_emph = True)
         
+        self.misc_flags_frame = tk.LabelFrame(text="Other Settings:", bd=0)  #wxy
+        self.misc_flags_frame.grid(row=3, column=4, rowspan=5, sticky='NS', padx=2)
+        #--
         self.fashion_bool = tk.BooleanVar()
         self.fashion_bool.set(ini_parser.get_option_value(init_options, "fashion_souls"))
         self.fashion_bool.trace('w', lambda name, index, mode: self.update())
-        self.fashion_check = tk.Checkbutton(self.root, text="Fashion Souls", 
+        self.fashion_check = tk.Checkbutton(self.misc_flags_frame, text="Fashion Souls", 
          variable=self.fashion_bool, onvalue=True, offvalue=False, padx=2,
          width=20, anchor=tk.W)
-        self.fashion_check.grid(row=3, column=4, sticky='W')
+        self.fashion_check.grid(row=0, column=0, sticky='W')
         self.setup_hover_events(self.fashion_check, {"fashion": None}, no_emph=True)
         
         self.npc_armor_bool = tk.BooleanVar()
         self.npc_armor_bool.set(ini_parser.get_option_value(init_options, "randomize_npc_armor"))
         self.npc_armor_bool.trace('w', lambda name, index, mode: self.update())
-        self.npc_armor_check = tk.Checkbutton(self.root, text="Laundromat Mixup", 
+        self.npc_armor_check = tk.Checkbutton(self.misc_flags_frame, text="Laundromat Mixup", 
          variable=self.npc_armor_bool, onvalue=True, offvalue=False, padx=2,
          width=20, anchor=tk.W)
-        self.npc_armor_check.grid(row=4, column=4, sticky='W')
+        self.npc_armor_check.grid(row=1, column=0, sticky='W')
         self.setup_hover_events(self.npc_armor_check, {"npc_armor": None}, no_emph=True)
-        
-        self.use_lordvessel = tk.StringVar()
-        self.use_lordvessel.set(rngopts.RandOptLordvesselLocation.verify(ini_parser.get_option_value(init_options, "use_lordvessel")))
-        self.use_lordvessel.trace('w', lambda name, index, mode: self.update())
-        self.gui_lordvessel = ttk.Combobox(self.root, 
-                                            textvariable=self.use_lordvessel,
-                                            values=rngopts.RandOptLordvesselLocation.as_values(),
-                                            state="readonly")
-        self.gui_lordvessel.grid(row=5, column=4, sticky='W')
-        self.setup_hover_events(self.gui_lordvessel, {"use_lv": None}, no_emph = True)
-        
+       
         self.use_lord_souls = tk.BooleanVar()
         self.use_lord_souls.set(ini_parser.get_option_value(init_options, "use_lord_souls"))
         self.use_lord_souls.trace('w', lambda name, index, mode: self.update())
-        self.lord_soul_check = tk.Checkbutton(self.root, text="Senile Primordial Serpents", 
+        self.lord_soul_check = tk.Checkbutton(self.misc_flags_frame, text="Senile Primordial Serpents", 
          variable=self.use_lord_souls, onvalue=True, offvalue=False, padx=2,
          width=20, anchor=tk.W)
-        self.lord_soul_check.grid(row=6, column=4, sticky='W')
+        self.lord_soul_check.grid(row=2, column=0, sticky='W')
         self.setup_hover_events(self.lord_soul_check, {"use_lord_souls": None}, no_emph = True)
 
         self.ascend_weapons_bool = tk.BooleanVar()
         self.ascend_weapons_bool.set(ini_parser.get_option_value(init_options, "ascend_weapons"))
         self.ascend_weapons_bool.trace('w', lambda name, index, mode: self.update())
-        self.ascend_weapons_check = tk.Checkbutton(self.root, text="Eager Smiths", 
+        self.ascend_weapons_check = tk.Checkbutton(self.misc_flags_frame, text="Eager Smiths", 
          variable=self.ascend_weapons_bool, onvalue=True, offvalue=False, padx=2,
          width=20, anchor=tk.W)
-        self.ascend_weapons_check.grid(row=7, column=4, sticky='W')
+        self.ascend_weapons_check.grid(row=3, column=0, sticky='W')
         self.setup_hover_events(self.ascend_weapons_check, {"ascend_weapons": None}, no_emph = True)
 
         self.set_up_hints = tk.BooleanVar()
         self.set_up_hints.set(ini_parser.get_option_value(init_options, "set_up_hints"))
         self.set_up_hints.trace('w', lambda name, index, mode: self.update())
-        self.hint_check = tk.Checkbutton(self.root, text="Seek Guidance Hints", 
+        self.hint_check = tk.Checkbutton(self.misc_flags_frame, text="Seek Guidance Hints", 
          variable=self.set_up_hints, onvalue=True, offvalue=False, padx=2,
          width=20, anchor=tk.W)
-        self.hint_check.grid(row=8, column=4, sticky='W')
+        self.hint_check.grid(row=4, column=0, sticky='W')
         self.setup_hover_events(self.hint_check, {"set_up_hints": None}, no_emph = True)
+
+        self.keys_not_in_dlc = tk.BooleanVar()
+        self.keys_not_in_dlc.set(ini_parser.get_option_value(init_options, "keys_not_in_dlc"))
+        self.keys_not_in_dlc.trace('w', lambda name, index, mode: self.update())
+        self.keys_not_in_dlc_check = tk.Checkbutton(self.misc_flags_frame, text="No DLC", 
+         variable=self.keys_not_in_dlc, onvalue=True, offvalue=False,   #, padx=2,
+         width=10, anchor=tk.W)
+        self.keys_not_in_dlc_check.grid(row=5, column=0, sticky='W')
+        self.setup_hover_events(self.keys_not_in_dlc_check, {"keys_not_in_dlc": None}, no_emph = True)
         
         self.export_button = tk.Button(self.root, text="Scramble Items &\nExport to GameParam", 
          padx=10, pady=10, command=self.export_to_gameparam)
-        self.export_button.grid(row=9, rowspan=3, column=4, padx=2, sticky='EW')
+        self.export_button.grid(row=8, rowspan=3, column=4, padx=2, sticky='EW')
         
         self.cheat_button = tk.Button(self.root, text="Write Seed Cheatsheet", command=self.export_seed_info)
-        self.cheat_button.grid(row=12, rowspan=1, column=4, sticky='EW', padx=2, pady=2)
+        self.cheat_button.grid(row=11, rowspan=1, column=4, sticky='EW', padx=2, pady=2)
 
         # Settings sync popup menu
         self.popup_menu = tk.Menu(self.root, tearoff=0)
@@ -564,7 +554,8 @@ class MainGUI:
             self.gui_lordvessel.config(state="normal")
             self.lord_soul_check.config(state="normal")
             self.keys_not_in_dlc_check.config(state="normal")
-            
+
+        """
         if self.key_diff.get() == rngopts.RandOptKeyDifficulty.SPEEDRUN_MODE:
             self.diff.set(rngopts.RandOptDifficulty.EASY)
             self.diff_rbutton1.config(state="disabled")
@@ -574,8 +565,12 @@ class MainGUI:
             self.diff_rbutton1.config(state="normal")
             self.diff_rbutton2.config(state="normal")
             self.diff_rbutton3.config(state="normal")
+            """
+        if self.key_diff.get() == rngopts.RandOptKeyDifficulty.SPEEDRUN_MODE:
+            self.gui_diff.config(state="disabled")
+        else:
+            self.gui_diff.config(state="normal")
 
-        # xyz
         if self.game_version.get() == rngopts.RandOptGameVersion.REMASTERED:
             self.hint_check.config(state="normal")
         else:

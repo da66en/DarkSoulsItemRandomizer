@@ -6,3 +6,4 @@ dist/*
 dev_tools/
 __pycache__
 .idea
+random-seed-*

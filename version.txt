@@ -1,3 +1,6 @@
+unreleased
+- Changed radio buttons to combobox to make space on the GUI for new features (da66en)
+
 0.7.0
 - Adds 'Revert to Vanilla' (AzetinnitezA)
 - Adds copy to clipboard and paste from clipboard seed and settings on right mouse click (eaglevis)
