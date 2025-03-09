@@ -128,7 +128,7 @@ class RandOptLordvesselLocation:
 class RandomizerOptions:
     def __init__(self, difficulty, fashion_souls, key_placement, 
      use_lordvessel, use_lord_souls, soul_items_diff, start_items_diff,
-     game_version, randomize_npc_armor, ascend_weapons, keys_not_in_dlc):
+     game_version, randomize_npc_armor, ascend_weapons, keys_not_in_dlc, set_up_hints):
          self.difficulty = difficulty
          self.fashion_souls = fashion_souls
          self.key_placement = key_placement
@@ -140,6 +140,7 @@ class RandomizerOptions:
          self.randomize_npc_armor = randomize_npc_armor
          self.ascend_weapons = ascend_weapons
          self.keys_not_in_dlc = keys_not_in_dlc
+         self.set_up_hints = set_up_hints
          
     def bool_option_to_string(self, b):
         if b:
@@ -153,12 +154,13 @@ class RandomizerOptions:
         return_string += "  Difficulty: " + RandOptDifficulty.as_string(self.difficulty) + "\n"
         return_string += "  Fashion Souls: " + self.bool_option_to_string(self.fashion_souls) + "\n"
         return_string += "  Key Difficulty: " + RandOptKeyDifficulty.as_string(self.key_placement) + "\n"
-        return_string += "  Senile Gwynevere: " + self.bool_option_to_string(self.use_lordvessel) + "\n"
+        return_string += "  Lordvessel: " + self.use_lordvessel + "\n"
         return_string += "  Senile Primordial Serpents: " + self.bool_option_to_string(self.use_lord_souls) + "\n"
         return_string += "  Soul Items: " + RandOptSoulItemsDifficulty.as_string(self.soul_items_diff) + "\n"
         return_string += "  Starting Items: " + RandOptStartItemsDifficulty.as_string(self.start_items_diff) + "\n"
         return_string += "  Laundromat Mixup: " + self.bool_option_to_string(self.randomize_npc_armor) + "\n"
-        return_string += "  Ascend Weapons: " + self.bool_option_to_string(self.ascend_weapons) + "\n"
-        return_string += "  Keys in DLC: " + self.bool_option_to_string(not self.keys_not_in_dlc) + "\n"
+        return_string += "  Eager Smiths: " + self.bool_option_to_string(self.ascend_weapons) + "\n"
+        return_string += "  No DLC: " + self.bool_option_to_string(self.keys_not_in_dlc) + "\n"
+        return_string += "  Seek Guidance Hints: " + self.bool_option_to_string(self.set_up_hints) + "\n"
         return return_string
         

@@ -410,7 +410,7 @@ def build_table(rand_options, random_source, chr_init_data):
     for chr_init in given_cip.chr_inits:
         print(chr_init.to_string())
     
-    table = item_t.ItemTable(copy.deepcopy(loc_s.LOCATIONS), copy.deepcopy(shop_s.DEFAULT_SHOP_DATA))
+    table = item_t.ItemTable(rand_options, copy.deepcopy(loc_s.LOCATIONS), copy.deepcopy(shop_s.DEFAULT_SHOP_DATA))
     place_ignored_items(table, item_list)
     place_upgrade_items(table, random_source, item_list)
     place_key_items(table, rand_options, random_source, item_list)
@@ -440,6 +440,7 @@ if __name__ == "__main__":
       rng_opt.RandOptSoulItemsDifficulty.SHUFFLE,
       rng_opt.RandOptStartItemsDifficulty.COMBINED_POOL_AND_2H,
       rng_opt.RandOptGameVersion.PTDE,
+      False,
       False,
       False)
     

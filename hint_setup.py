@@ -3,6 +3,7 @@ import items_setup as item_s
 import locations_setup as loc_s
 import random
 import fmg_handler
+import randomizer_options as rngopts
 
 HINT_LOCATIONS = {
     8110: {"id": 8110, "area": "Undead Asylum", "original_text": "Exchange"},
@@ -49,7 +50,7 @@ TRASH_HINTS = {
     "The right man in the wrong place can make all the difference in the world.",
     "I watched C-beams glitter in the dark near the Tannhäuser Gate",
     "55 Burgers, 55 Fries, 55 Tacos, 55 Pies...",
-    "Rip and Tear until it is done.",
+    "Rip and Tear until it is done!",
     "These pretzels are making me thirsty.",
     "Stay awhile and listen.",
     "Thou hast lost an eighth.",
@@ -76,7 +77,9 @@ TRASH_HINTS = {
     "Goonies never say die.",
     "Would you say I have a plethora of pinatas?",
     "Never go in against a Sicilian when death is on the line!",
-    "Kneel before Zod."
+    "Kneel before Zod.",
+    "There might be a Donkey Kong kill screen coming up.",
+    "Shouldn't we wait for Jarnathan?"
 }
 
 USEFUL_LOCATIONS = {
@@ -212,13 +215,14 @@ AREA_HINT_NAMES = {
 }
 
 class HintBuilder:
-    def __init__(self):
+    def __init__(self, rand_options):
         self.useful_locations = []
         self.useful_items = []
         self.key_items = []
         self.big_keys = []
         self.hint_list = []
         self.hint_locations = HINT_LOCATIONS.copy()
+        self.rand_options = rand_options
 
     def AddItemOrLocationToHintBuilder(self, itemlotpart, loc_id):
         item_name = ""
@@ -226,6 +230,22 @@ class HintBuilder:
         location = loc_s.LOCATIONS[loc_id]
         if location.diff in [loc_s.LOC_DIF.IGNORE, loc_s.LOC_DIF.EMPTY, loc_s.LOC_DIF.LEAVE_ALONE]:
             return
+        
+        if isinstance(itemlotpart.key_name, str) and (itemlotpart.key_name == "lordvessel"):
+            if (self.rand_options.use_lordvessel != rngopts.RandOptLordvesselLocation.RANDOMIZED):
+                return  # in a fixed location, we don't need a hint
+        
+        # lord_soul_nito lord_soul_bed_of_chaos lord_soul_shard_four_kings lord_soul_shard_seath
+        if isinstance(itemlotpart.key_name, str) and itemlotpart.key_name.startswith("lord_soul_"):
+            if not self.rand_options.use_lord_souls:
+                return  # in a fixed location, we don't need a hint
+            
+        if isinstance(itemlotpart.key_name, str) and (itemlotpart.key_name == "broken_pendant"):
+            if self.rand_options.keys_not_in_dlc:
+                return  # don't need key to DLC if rando isn't supposed to put key items there
+            
+        if self.rand_options.keys_not_in_dlc and location.is_dlc:
+            return # don't give hints to DLC areas if rando isn't supposed to put key items there
 
         item = itemlotpart.items[0]
         if item.item_type == item_s.ITEM_TYPE.ARMOR:
@@ -271,9 +291,12 @@ class HintBuilder:
         # take 6 of the useful locations, put them in (6 slots, 26 total)
         # take 3 trash hints, shuffle them in twice (6 slots, 32 total)
 
-        big_keys = rng.sample(self.big_keys, 2)
+        num_big_keys = min(2, len(self.big_keys))
+        num_useful_items = 4 + (2*2 - num_big_keys*2)
+
+        big_keys = rng.sample(self.big_keys, num_big_keys)
         key_items = rng.sample(self.key_items, 6)
-        useful_items = rng.sample(self.useful_items, 4)
+        useful_items = rng.sample(self.useful_items, num_useful_items)
         useful_locations = rng.sample(self.useful_locations, 6)
         trash_hints = rng.sample(list(TRASH_HINTS), 3)
 

@@ -37,7 +37,7 @@ INI_FILE = "randomizer.ini"
 
 MAX_SEED_LENGTH = 64
 
-VERSION_NUM = "0.7.1"
+VERSION_NUM = "0.7.x"
 # only add versions compatible RNG-wise, IE when fixing GUI stuff
 COMPATIBLE_VERSIONS = [VERSION_NUM, ]
 
@@ -176,7 +176,7 @@ class MainGUI:
         self.msg_continue_button.grid(row=7, column=1, columnspan=2, rowspan=2)
         self.back_button = tk.Button(self.root, text="Back", command=self.back_button)
         self.back_button.grid(row=7, column=1, columnspan=2, rowspan=2)
-        self.desc_area = tk.Text(self.root, width=76, height=19, state="disabled", background=self.root.cget('background'), wrap="word")
+        self.desc_area = tk.Text(self.root, width=76, height=22, state="disabled", background=self.root.cget('background'), wrap="word")
         self.desc_area.grid(row=2, column=0, columnspan=3, rowspan=10, padx=2, pady=2)
         
         self.save_options = tk.BooleanVar()
@@ -186,7 +186,7 @@ class MainGUI:
          width=20, anchor=tk.W)
         self.save_options_check.grid(row=1, column=3, columnspan=2)
 
-        self.diff_frame = tk.LabelFrame(text="Difficulty:", bd=0) #XYZ
+        self.diff_frame = tk.LabelFrame(text="Difficulty:", bd=0)
         self.diff_frame.grid(row=2, column=3, sticky='NS', padx=2)
         #--
         self.diff = tk.IntVar()
@@ -204,7 +204,7 @@ class MainGUI:
         self.setup_hover_events(self.gui_diff, {"diff": None}, no_emph = True)
        
         
-        self.key_diff_frame = tk.LabelFrame(text="Key Placement:", bd=0)  #XYZ
+        self.key_diff_frame = tk.LabelFrame(text="Key Placement:", bd=0)
         self.key_diff_frame.grid(row=3, column=3, sticky='NS', padx=2)
         #--
         self.key_diff = tk.IntVar()
@@ -221,7 +221,7 @@ class MainGUI:
         self.gui_key_diff.grid(row=0, column=0, sticky='W')
         self.setup_hover_events(self.gui_key_diff, {"key_diff": None}, no_emph = True)
 
-        self.soul_frame = tk.LabelFrame(text="Soul Items:", bd=0) #XYZ
+        self.soul_frame = tk.LabelFrame(text="Soul Items:", bd=0)
         self.soul_frame.grid(row=4, column=3, sticky='NS', padx=2, pady=2)
         #--
         self.soul_diff = tk.IntVar()
@@ -238,7 +238,7 @@ class MainGUI:
         self.gui_soul_diff.grid(row=0, column=0, sticky='W')
         self.setup_hover_events(self.gui_soul_diff, {"souls_diff": None}, no_emph = True)
 
-        self.use_lordvessel_frame = tk.LabelFrame(text="Lordvessel:", bd=0) #XYZ
+        self.use_lordvessel_frame = tk.LabelFrame(text="Lordvessel:", bd=0)
         self.use_lordvessel_frame.grid(row=5, column=3, sticky='NS', padx=2, pady=2)
         #--
         self.use_lordvessel = tk.StringVar()
@@ -582,10 +582,10 @@ class MainGUI:
         options = rngopts.RandomizerOptions(self.diff.get(), self.fashion_bool.get(), 
          self.key_diff.get(), self.use_lordvessel.get(), self.use_lord_souls.get(), 
          self.soul_diff.get(), self.start_items_diff.get(), self.game_version.get(),
-         self.npc_armor_bool.get(), self.ascend_weapons_bool.get(), self.keys_not_in_dlc.get())
+         self.npc_armor_bool.get(), self.ascend_weapons_bool.get(), self.keys_not_in_dlc.get(),
+         self.set_up_hints.get())
 
         if self.save_options.get():
-            options.set_up_hints = self.set_up_hints.get()
             ini_parser.save_ini(INI_FILE, options)        #save options right before creating seed
 
         rng = random.Random()
@@ -620,7 +620,7 @@ class MainGUI:
         syncnum_str = syncnum[0:4] + "-" + syncnum[4:7]
         return syncnum_str
         
-    def export_seed_info(self, use_randomized_data=None):
+    def export_seed_info(self, syncnum, use_randomized_data=None):
         if self.is_seed_empty():
             self.seed_entry.config(bg = "light salmon")
             return
@@ -642,7 +642,7 @@ class MainGUI:
             (options, randomized_data, rng) = self.randomize_data(None)
         (table, randomized_chr_data) = randomized_data
             
-        syncnum = self.get_syncnum_string(rng)
+        #syncnum = self.get_syncnum_string(rng) #confused by this call as the sync already been changed
         
         result_ilp = table.build_itemlotparam()
         ilp_binary_export = result_ilp.export_as_binary()
@@ -651,8 +651,14 @@ class MainGUI:
         cip_binary_export = randomized_chr_data.export_as_binary()
         cheat_string = table.build_cheatsheet(show_event_flags=False)
         hint_string = table.build_hintsheet()
-        seed_info = "Seed: " + str(self.seed_string.get()) + "\n\n" + options.as_string()
-        
+
+        seed_info = "Randomizer version: " + VERSION_NUM \
+            + "\n\nSeed: " + str(self.seed_string.get()) \
+            + "\n\n" + options.as_string() \
+            + "\nSyncNum: " + syncnum \
+            + "\n\nSettings Sync:\n" + self.settings_string_io.construct().decode()
+
+
         ITEMLOT_FILEPATH = os.path.join(new_dirpath, "ItemLotParam.param")
         SHOPLINEUP_FILEPATH = os.path.join(new_dirpath, "ShopLineupParam.param")
         CHRINIT_FILEPATH = os.path.join(new_dirpath, "CharaInitParam.param")
@@ -674,7 +680,7 @@ class MainGUI:
         with open(SEEDINFO_FILEPATH, 'w') as f:
             f.write(seed_info)
 
-        if (self.set_up_hints.get()):
+        if (options.set_up_hints):
             table.hint_builder.WriteDebugFile(HINTDEBUG_FILEPATH)
             
         if not use_randomized_data:
@@ -836,16 +842,18 @@ class MainGUI:
             #  ChrInit data.
             (options, randomized_data, rng) = self.randomize_data(None)
             (item_table, randomized_chr_data) = randomized_data
-            syncnum = self.get_syncnum_string(rng)
+            #syncnum = self.get_syncnum_string(rng)
             
             result_ilp = item_table.build_itemlotparam()
             ilp_binary_export = result_ilp.export_as_binary()
             result_slp = item_table.build_shoplineup()
             slp_binary_export = result_slp.export_as_binary()
             cip_binary_export = randomized_chr_data.export_as_binary()
-            if self.set_up_hints.get():
+            if options.set_up_hints:
                 item_table.hint_builder.ConstructHintList(rng)
-            
+
+            syncnum = self.get_syncnum_string(rng)
+        
             for index, (file_id, filepath, filedata) in enumerate(content_list):
                 if (filepath == "N:\\FRPG\\data\\INTERROOT_win32\\param\\GameParam\\ItemLotParam.param" or
                  filepath == "N:\\FRPG\\data\\INTERROOT_x64\\param\\GameParam\\ItemLotParam.param"):
@@ -864,7 +872,7 @@ class MainGUI:
             
             # Write out our menu text if we need to
             if is_remastered:
-                if self.set_up_hints.get():
+                if options.set_up_hints:
                     for index, (file_id, filepath, filedata) in enumerate(enmenu_content_list):
                         if (filepath == "N:\FRPG\data\Msg\Data_ENGLISH\Blood_writing_.fmg"):
                             fmgData = FMGHandler(FMGHandler.load_from_file_content(filedata))
@@ -875,8 +883,8 @@ class MainGUI:
                         new_content = dcx_handler.compress_dcx_content(new_content)
                     with open(enmenu_filepath, "wb") as f:
                         f.write(new_content)            
-            
-            seed_folder = self.export_seed_info((options, randomized_data, rng))
+           
+            seed_folder = self.export_seed_info(syncnum, (options, randomized_data, rng))
                 
             self.msg_continue_button.lower()
             self.msg_area.config(state="normal")

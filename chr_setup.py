@@ -1115,6 +1115,7 @@ if __name__ == "__main__":
      rng_opt.RandOptStartItemsDifficulty.SHIELD_AND_1H,
      rng_opt.RandOptGameVersion.PTDE,
      False,
+     False,
      False)
      
     random_source = random.Random()

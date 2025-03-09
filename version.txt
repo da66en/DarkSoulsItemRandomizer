@@ -1,5 +1,8 @@
 unreleased
 - Changed radio buttons to combobox to make space on the GUI for new features (da66en)
+- Added more info to seed_info.txt so it's easier to recreate the seed (da66en)
+- Fix for 'Seek Guidance' choice not affecting SyncNum reported (da66en)
+- 'Seek Guidance' won't give hints for Lordvessel or Lord Souls if they are not randomized, or give hintes for DLC keys or items in DLC area if not playing items in DLC area. (da66en)
 
 0.7.0
 - Adds 'Revert to Vanilla' (AzetinnitezA)

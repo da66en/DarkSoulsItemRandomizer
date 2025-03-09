@@ -13,7 +13,7 @@ import itertools
 import hint_setup
 
 class ItemTable:
-    def __init__(self, location_dict = None, shop_dict = None):
+    def __init__(self, rand_options, location_dict = None, shop_dict = None):
         if location_dict == None:
             location_dict = {}
         if shop_dict == None:
@@ -22,7 +22,8 @@ class ItemTable:
         self.location_dict = location_dict
         self.shop_dict = shop_dict
         self.key_locs = {}
-        self.hint_builder = hint_setup.HintBuilder()
+        self.hint_builder = hint_setup.HintBuilder(rand_options)
+        self.rand_options = rand_options
         
         for loc_id in location_dict:
             if location_dict[loc_id].location_id != loc_id:
