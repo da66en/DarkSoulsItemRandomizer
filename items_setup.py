@@ -2006,6 +2006,24 @@ RANDOM_UPGRADE_UNCOMMON = [(1030, 1), (1040, 1), (1050, 1), (1060, 1)] # Will ha
 RANDOM_UPGRADE_RARE = [(1030, 2), (1040, 2), (1050, 2), (1060, 2), (1110, 1), (1120, 1), (1130, 1)] # Will have 20% drop chance.
 RANDOM_UPGRADE_ULTRARARE = [(1070, 1), (1080, 1), (1090, 1), (1100, 1), (1110, 2), (1120, 2), (1130, 2)] # Will have 15% drop chance.
 
+ONLINE_USE_ITEMS = [
+ 100,   #White Sign Soapstone", 
+ 101,   #Red Sign Soapstone", 
+ 102,   #Red Eye Orb", 
+ 103,   #Black Separation Crystal", 
+ 106,   #Orange Guidance Soapstone", 
+ 108,   #Book of the Guilty", 
+ 109,   #Eye of Death", 
+ 111,   #Cracked Red Eye Orb", 
+ 112,   #Servant Roster", 
+ 113,   #Blue Eye Orb", 
+ 114,   #Dragon Eye"
+ 118,   #Purple Coward's Crystal", 
+ 373,   #Indictment", 
+ 374,   #Souvenir of Reprisal", 
+ 385    #Dried Finger", 
+]
+
 # (consumable_type, consumable_id, min_amount, max_amount)
 RANDOM_CONSUMABLES = [
  (ITEM_TYPE.ITEM, 230, 1, 1), # Elizabeth's Mushroom

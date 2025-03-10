@@ -366,6 +366,13 @@ def place_non_key_fixed_items(table, rand_options, random_source, item_list):
          item_s.ITEM_DIF.SALABLE_HARD]:
              item.items[0].count = -1
 
+        if rand_options.no_online_items:
+            for itemlot in item.items:
+                if itemlot.item_type == item_s.ITEM_TYPE.ITEM:
+                    if itemlot.item_id in item_s.ONLINE_USE_ITEMS:
+                        item = transmute_itemlotpart_to_consumable(item, random_source)
+                        item.diff = item_s.ITEM_DIF.EASY # change it to easy; important to fix one of the cracked red orb's as it's salable and we want to remove that
+
         # Optionally randomly ascend weapons.
         if rand_options.ascend_weapons == True:
             item = ascend_itemlotpart_to_ascended_item(item, random_source)

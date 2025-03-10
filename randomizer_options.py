@@ -141,6 +141,7 @@ class RandomizerOptions:
          self.ascend_weapons = ascend_weapons
          self.keys_not_in_dlc = keys_not_in_dlc
          self.set_up_hints = set_up_hints
+         self.no_online_items = True
          
     def bool_option_to_string(self, b):
         if b:

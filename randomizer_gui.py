@@ -1,11 +1,6 @@
 # TODO: is lightning spear, great lightening spear and sunlight spear being shuffled in?
-# TODO: don't let sunlight_maggot be tomb of giants
 # TODO: add option to remove black knight weapons
-# TODO: seek guidance help doesn't use seed
-# TODO: seek guidance help doesn't affect SyncNum
-# TODO: don't place online items (cracked red skull, broken finger, soapstones)
-# TODO: seek guidance don't say where lordvessel is if we forced it's placement
-# TODO: add sync settings and sync num to seed_info.txt
+# TODO: remove Cat Covenant Ring and Darkmoon Blade Covenant Ring as it is an online only item
 
 import tkinter as tk
 import tkinter.ttk as ttk
