@@ -343,13 +343,32 @@ def place_non_key_fixed_items(table, rand_options, random_source, item_list):
              item_s.ITEM_DIF.BOSS_SOUL] and not 
              item_s.ITEMS[item_id].always_follow_items):
                 item_list[item_id].follow_items = []
+
+    if rand_options.no_online_items:
+        # because Darkmoon Blade Covenant Ring follows Blue Eye Orb, we need to go thru list now to scrub online items.
+        online_loc_ids = [3000] # also populate the 'Snuggly the Crow trade for Cracked Red Eye Orb' location with the 1st online item we see.
+        for item_id in item_ids_to_place:
+            item = item_list[item_id]
+            for itemlot in item.items:
+                if (itemlot.item_type == item_s.ITEM_TYPE.ITEM and \
+                    itemlot.item_id in item_s.ONLINE_USE_ITEMS) or \
+                    (itemlot.item_type == item_s.ITEM_TYPE.RING and \
+                    itemlot.item_id in item_s.ONLINE_USE_RINGS):
+                        item = transmute_itemlotpart_to_consumable(item, random_source)
+                        item.diff = item_s.ITEM_DIF.EASY # change it to easy; important to fix one of the cracked red orb's as it's salable and we want to remove that"
+                        item_list[item_id] = item
+                        if (len(online_loc_ids) > 0) and not item.needs_flag:
+                            online_loc_id = online_loc_ids.pop()
+                            table.place_itemlotpart_at_location(item, online_loc_id, item_list)
+                            item_ids_to_place.pop(item_ids_to_place.index(item_id))
+
     # Remove following items from items_to_place.
     following_items = set(f_item_id for item_id in item_ids_to_place for 
      f_item_id in item_list[item_id].follow_items)
     item_ids_to_place = [item_id for item_id in item_ids_to_place if 
      item_id not in following_items]
     item_ids_to_place.sort(key = lambda item_id: item_list[item_id].get_max_effective_size(), reverse = True)
-    
+
     for item_id in item_ids_to_place:
         item = item_list[item_id]
         
@@ -365,13 +384,6 @@ def place_non_key_fixed_items(table, rand_options, random_source, item_list):
         if item.diff in [item_s.ITEM_DIF.SALABLE_EASY, item_s.ITEM_DIF.SALABLE_MEDIUM, 
          item_s.ITEM_DIF.SALABLE_HARD]:
              item.items[0].count = -1
-
-        if rand_options.no_online_items:
-            for itemlot in item.items:
-                if itemlot.item_type == item_s.ITEM_TYPE.ITEM:
-                    if itemlot.item_id in item_s.ONLINE_USE_ITEMS:
-                        item = transmute_itemlotpart_to_consumable(item, random_source)
-                        item.diff = item_s.ITEM_DIF.EASY # change it to easy; important to fix one of the cracked red orb's as it's salable and we want to remove that
 
         # Optionally randomly ascend weapons.
         if rand_options.ascend_weapons == True:

@@ -1,6 +1,5 @@
 # TODO: is lightning spear, great lightening spear and sunlight spear being shuffled in?
 # TODO: add option to remove black knight weapons
-# TODO: remove Cat Covenant Ring and Darkmoon Blade Covenant Ring as it is an online only item
 
 import tkinter as tk
 import tkinter.ttk as ttk

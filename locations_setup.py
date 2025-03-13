@@ -114,6 +114,7 @@ class Location:
             area == AREA.OOLACILE_TOWNSHIP or
             area == AREA.PAINTED_WORLD or
             area == AREA.PAINTED_WORLD_ANNEX or
+            area == AREA.CHASM_OF_THE_ABYSS or
             area == AREA.ROYAL_WOOD)
             
 LOCATIONS = {
