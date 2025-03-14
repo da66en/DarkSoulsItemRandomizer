@@ -1,5 +1,6 @@
 # TODO: is lightning spear, great lightening spear and sunlight spear being shuffled in?
 # TODO: add option to remove black knight weapons
+# TODO: generate cheat sheet doesn't do seek guidance hints or show sync-num
 
 import tkinter as tk
 import tkinter.ttk as ttk
@@ -31,7 +32,7 @@ INI_FILE = "randomizer.ini"
 
 MAX_SEED_LENGTH = 64
 
-VERSION_NUM = "0.7.1"
+VERSION_NUM = "0.7.2"
 # only add versions compatible RNG-wise, IE when fixing GUI stuff
 COMPATIBLE_VERSIONS = [VERSION_NUM, ]
 
@@ -614,7 +615,7 @@ class MainGUI:
         syncnum_str = syncnum[0:4] + "-" + syncnum[4:7]
         return syncnum_str
         
-    def export_seed_info(self, syncnum, use_randomized_data=None):
+    def export_seed_info(self, syncnum=None, use_randomized_data=None):
         if self.is_seed_empty():
             self.seed_entry.config(bg = "light salmon")
             return
@@ -649,7 +650,7 @@ class MainGUI:
         seed_info = "Randomizer version: " + VERSION_NUM \
             + "\n\nSeed: " + str(self.seed_string.get()) \
             + "\n\n" + options.as_string() \
-            + "\nSyncNum: " + syncnum \
+            + "\nSyncNum: " + (syncnum if syncnum != None else "?") \
             + "\n\nSettings Sync:\n" + self.settings_string_io.construct().decode()
 
 
@@ -674,9 +675,9 @@ class MainGUI:
         with open(SEEDINFO_FILEPATH, 'w') as f:
             f.write(seed_info)
 
-        if (options.set_up_hints):
+        if (options.set_up_hints and (syncnum != None)):
             table.hint_builder.WriteDebugFile(HINTDEBUG_FILEPATH)
-            
+          
         if not use_randomized_data:
             self.msg_continue_button.lower()
             self.msg_area.config(state="normal")
@@ -684,7 +685,7 @@ class MainGUI:
             self.msg_area.insert("end", "\n")
             self.msg_area.insert("end", "SUCCESS", "yay")
             self.msg_area.insert("end", "! The information for this seed has been exported in the directory\n  {}\n\n".format(new_dir_name))
-            self.msg_area.insert("end", "SyncNum: {}\n  (When racing, all SyncNums should be equal or settings do not match.)\n\n".format(syncnum))
+            self.msg_area.insert("end", "SyncNum: {}\n  (When racing, all SyncNums should be equal or settings do not match.)\n\n".format(syncnum if syncnum != None else "?"))
             self.msg_area.insert("end", 'If you want to easily share this seed and settings with your friends, '
                                         'right click on this window and select "Copy settings sync". \n\n')
             self.msg_area.insert("end", "Click \"Back\" to begin again, or click \"Quit\" to exit.\n\n")
