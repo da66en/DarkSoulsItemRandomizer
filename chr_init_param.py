@@ -1,6 +1,9 @@
 import struct
 import sys
 
+import chr_setup as chr_s
+import item_lot_formatter as item_lf
+
 def extract_shift_jisz(content, offset):
     extracted = b''
     while content[offset:offset+1] != b'\x00':
@@ -212,6 +215,25 @@ class ChrInitParam:
             if chr_init.chr_init_id == chr_id:
                 return chr_init
         return None
+    
+    def return_cheatsheet(self):
+        ret = ""
+        attrs_to_print = ['spell_1', 'spell_2', 'spell_3', 'spell_4', 'spell_5', 'spell_6', 'spell_7', 
+                          'arrow_1', 'arrow_2', 'bolt_1', 'bolt_2',
+                          'item_1', 'item_2', 'item_3', 'item_4', 'item_5', 'item_6', 'item_7', 'item_8', 'item_9', 'item_10',
+                          'ring_1', 'ring_2', 'ring_3', 'ring_4', 'ring_5']
+        for class_name in chr_s.CLASS_TO_CHR_INIT:
+            (_, start_class_init_id) = chr_s.CLASS_TO_CHR_INIT[class_name]
+            ret += class_name.title() + " starting items:\n\t"
+            chr = self.find_chr_by_id(start_class_init_id)
+            for attr_to_print in attrs_to_print:
+                attr_id = getattr(chr, attr_to_print)
+                attr_value = "None"
+                if attr_id > 0:
+                    attr_value = item_lf.ITEMS[attr_id]
+                ret += attr_to_print + ":'" + attr_value +"' "
+            ret += "\n"
+        return ret
         
     def export_as_binary(self):
         num_of_records = len(self.chr_inits)

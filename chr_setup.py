@@ -3,6 +3,7 @@ log = logging.getLogger(__name__)
 
 import random
 from enum import Enum
+from enum import IntEnum
 import math
 
 import chr_init_param as cip
@@ -977,14 +978,20 @@ class StartingClassData:
         CHR_INIT.SPELL_1: ("spell_1", "extra"),
         CHR_INIT.ITEM_1: ("item_1", "extra")
     }
+
+    class POOL_CFG(IntEnum):
+        ORIGINAL = 0
+        ORIGINAL_AND_NEW = 1
+        NEW = 2
         
-    def __init__(self, class_name, item_type, item, chr_init_fields, item_quantity = 1, should_pass_to_items = True):
+    def __init__(self, class_name, item_type, item, chr_init_fields, item_quantity = 1, should_pass_to_items = True, pool_cfg = POOL_CFG.ORIGINAL):
         self.class_name = class_name
         self.item_type = item_type
         self.item = item
         self.chr_init_fields = chr_init_fields
         self.item_quantity = item_quantity
         self.should_pass_to_items = should_pass_to_items
+        self.pool_config = pool_cfg
 
 EXTRA_DATA = [
  StartingClassData("hunter", item_s.ITEM_TYPE.WEAPON, 1200000, [StartingClassData.CHR_INIT.WEP_R2]),
@@ -1002,40 +1009,59 @@ EXTRA_DATA = [
  StartingClassData("sorcerer", item_s.ITEM_TYPE.WEAPON, 1305000, [StartingClassData.CHR_INIT.WEP_R2]),
  StartingClassData("sorcerer", item_s.ITEM_TYPE.WEAPON, 1308000, [StartingClassData.CHR_INIT.WEP_R2]),
  StartingClassData("sorcerer", item_s.ITEM_TYPE.WEAPON, 9018000, [StartingClassData.CHR_INIT.WEP_R2]),
- StartingClassData("sorcerer", item_s.ITEM_TYPE.ITEM, 3000, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False),
- StartingClassData("sorcerer", item_s.ITEM_TYPE.ITEM, 3010, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False),
- StartingClassData("sorcerer", item_s.ITEM_TYPE.ITEM, 3020, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False),
- StartingClassData("sorcerer", item_s.ITEM_TYPE.ITEM, 3100, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False),
- StartingClassData("sorcerer", item_s.ITEM_TYPE.ITEM, 3300, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False),
- StartingClassData("sorcerer", item_s.ITEM_TYPE.ITEM, 3400, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False),
- StartingClassData("sorcerer", item_s.ITEM_TYPE.ITEM, 3410, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False),
- StartingClassData("sorcerer", item_s.ITEM_TYPE.ITEM, 3500, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False),
- StartingClassData("sorcerer", item_s.ITEM_TYPE.ITEM, 3510, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False),
- StartingClassData("sorcerer", item_s.ITEM_TYPE.ITEM, 3520, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False),
- StartingClassData("sorcerer", item_s.ITEM_TYPE.ITEM, 3530, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False),
- StartingClassData("sorcerer", item_s.ITEM_TYPE.ITEM, 3540, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False),
- StartingClassData("sorcerer", item_s.ITEM_TYPE.ITEM, 3550, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False),
+ StartingClassData("sorcerer", item_s.ITEM_TYPE.ITEM, 3000, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False, pool_cfg=StartingClassData.POOL_CFG.ORIGINAL_AND_NEW),    #"Sorcery: Soul Arrow"  INT:10
+ StartingClassData("sorcerer", item_s.ITEM_TYPE.ITEM, 3010, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False, pool_cfg=StartingClassData.POOL_CFG.ORIGINAL_AND_NEW),    #"Sorcery: Great Soul Arrow"  INT:14
+ StartingClassData("sorcerer", item_s.ITEM_TYPE.ITEM, 3020, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False, pool_cfg=StartingClassData.POOL_CFG.ORIGINAL_AND_NEW),    #"Sorcery: Heavy Soul Arrow" INT:12
+ StartingClassData("sorcerer", item_s.ITEM_TYPE.ITEM, 3100, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False, pool_cfg=StartingClassData.POOL_CFG.ORIGINAL_AND_NEW),    #"Magic Weapon" INT:10
+ StartingClassData("sorcerer", item_s.ITEM_TYPE.ITEM, 3300, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False, pool_cfg=StartingClassData.POOL_CFG.ORIGINAL_AND_NEW),    #"Sorcery: Magic Shield"
+ StartingClassData("sorcerer", item_s.ITEM_TYPE.ITEM, 3400, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False, pool_cfg=StartingClassData.POOL_CFG.ORIGINAL),    #"Sorcery: Hidden Weapon"
+ StartingClassData("sorcerer", item_s.ITEM_TYPE.ITEM, 3410, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False, pool_cfg=StartingClassData.POOL_CFG.ORIGINAL),    #"Sorcery: Hidden Body"
+ StartingClassData("sorcerer", item_s.ITEM_TYPE.ITEM, 3500, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False, pool_cfg=StartingClassData.POOL_CFG.ORIGINAL_AND_NEW),    #"Cast Light" INT:14
+ StartingClassData("sorcerer", item_s.ITEM_TYPE.ITEM, 3510, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False, pool_cfg=StartingClassData.POOL_CFG.ORIGINAL),    #"Sorcery: Hush"
+ StartingClassData("sorcerer", item_s.ITEM_TYPE.ITEM, 3520, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False, pool_cfg=StartingClassData.POOL_CFG.ORIGINAL),    #"Sorcery: Aural Decoy"
+ StartingClassData("sorcerer", item_s.ITEM_TYPE.ITEM, 3530, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False, pool_cfg=StartingClassData.POOL_CFG.ORIGINAL),    #"Sorcery: Repair"
+ StartingClassData("sorcerer", item_s.ITEM_TYPE.ITEM, 3540, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False, pool_cfg=StartingClassData.POOL_CFG.ORIGINAL),    #"Sorcery: Fall Control"
+ StartingClassData("sorcerer", item_s.ITEM_TYPE.ITEM, 3550, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False, pool_cfg=StartingClassData.POOL_CFG.ORIGINAL),    #"Sorcery: Chameleon"
+ StartingClassData("sorcerer", item_s.ITEM_TYPE.ITEM, 3720, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False, pool_cfg=StartingClassData.POOL_CFG.NEW), #"Dark Bead" INT:16
+ StartingClassData("sorcerer", item_s.ITEM_TYPE.ITEM, 3710, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False, pool_cfg=StartingClassData.POOL_CFG.NEW), #"Dark Orb" INT:16
+ StartingClassData("sorcerer", item_s.ITEM_TYPE.ITEM, 3110, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False, pool_cfg=StartingClassData.POOL_CFG.NEW), #"Great Magic Weapon" INT:15
+ StartingClassData("sorcerer", item_s.ITEM_TYPE.ITEM, 3030, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False, pool_cfg=StartingClassData.POOL_CFG.NEW), #"Great Heavy Soul Arrow" INT:16
+ StartingClassData("sorcerer", item_s.ITEM_TYPE.ITEM, 3040, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False, pool_cfg=StartingClassData.POOL_CFG.NEW), #"Homing Soulmass" INT:18
  StartingClassData("pyromancer", item_s.ITEM_TYPE.WEAPON, 1330000, [StartingClassData.CHR_INIT.WEP_R2]),
  StartingClassData("pyromancer", item_s.ITEM_TYPE.WEAPON, 1330100, [StartingClassData.CHR_INIT.WEP_R2]),
  StartingClassData("pyromancer", item_s.ITEM_TYPE.WEAPON, 1330200, [StartingClassData.CHR_INIT.WEP_R2]),
- StartingClassData("pyromancer", item_s.ITEM_TYPE.ITEM, 4000, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False),
- StartingClassData("pyromancer", item_s.ITEM_TYPE.ITEM, 4010, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False),
- StartingClassData("pyromancer", item_s.ITEM_TYPE.ITEM, 4100, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False),
- StartingClassData("pyromancer", item_s.ITEM_TYPE.ITEM, 4200, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False),
- StartingClassData("pyromancer", item_s.ITEM_TYPE.ITEM, 4210, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False),
- StartingClassData("pyromancer", item_s.ITEM_TYPE.ITEM, 4300, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False),
- StartingClassData("pyromancer", item_s.ITEM_TYPE.ITEM, 4310, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False),
- StartingClassData("pyromancer", item_s.ITEM_TYPE.ITEM, 4360, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False),
- StartingClassData("pyromancer", item_s.ITEM_TYPE.ITEM, 4400, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False),
+ StartingClassData("pyromancer", item_s.ITEM_TYPE.ITEM, 4000, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False, pool_cfg=StartingClassData.POOL_CFG.ORIGINAL_AND_NEW),   #"Pyromancy: Fireball"
+ StartingClassData("pyromancer", item_s.ITEM_TYPE.ITEM, 4010, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False, pool_cfg=StartingClassData.POOL_CFG.ORIGINAL_AND_NEW),   #"Fire Orb"
+ StartingClassData("pyromancer", item_s.ITEM_TYPE.ITEM, 4100, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False, pool_cfg=StartingClassData.POOL_CFG.ORIGINAL_AND_NEW),   #"Pyromancy: Combustion"
+ StartingClassData("pyromancer", item_s.ITEM_TYPE.ITEM, 4110, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False, pool_cfg=StartingClassData.POOL_CFG.NEW),   #"Pyromancy: Great Combustion"
+ StartingClassData("pyromancer", item_s.ITEM_TYPE.ITEM, 4030, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False, pool_cfg=StartingClassData.POOL_CFG.NEW),   #"Pyromancy: Firestorm"
+ StartingClassData("pyromancer", item_s.ITEM_TYPE.ITEM, 4040, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False, pool_cfg=StartingClassData.POOL_CFG.NEW),   #"Pyromancy: Fire Tempest"
+ StartingClassData("pyromancer", item_s.ITEM_TYPE.ITEM, 4050, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False, pool_cfg=StartingClassData.POOL_CFG.NEW),   #"Pyromancy: Fire Surge"
+ StartingClassData("pyromancer", item_s.ITEM_TYPE.ITEM, 4060, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False, pool_cfg=StartingClassData.POOL_CFG.NEW),   #"Pyromancy: Fire Whip"
+ StartingClassData("pyromancer", item_s.ITEM_TYPE.ITEM, 4520, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False, pool_cfg=StartingClassData.POOL_CFG.NEW),   #"Pyromancy: Chaos Fire Whip"
+ StartingClassData("pyromancer", item_s.ITEM_TYPE.ITEM, 4200, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False, pool_cfg=StartingClassData.POOL_CFG.ORIGINAL_AND_NEW),   #"Pyromancy: Poison Mist"
+ StartingClassData("pyromancer", item_s.ITEM_TYPE.ITEM, 4210, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False, pool_cfg=StartingClassData.POOL_CFG.ORIGINAL_AND_NEW),   #"Pyromancy: Toxic Mist"
+ StartingClassData("pyromancer", item_s.ITEM_TYPE.ITEM, 4300, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False, pool_cfg=StartingClassData.POOL_CFG.ORIGINAL),   #"Iron Flesh"
+ StartingClassData("pyromancer", item_s.ITEM_TYPE.ITEM, 4310, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False, pool_cfg=StartingClassData.POOL_CFG.ORIGINAL),   #"Pyromancy: Flash Sweat"
+ StartingClassData("pyromancer", item_s.ITEM_TYPE.ITEM, 4360, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False, pool_cfg=StartingClassData.POOL_CFG.ORIGINAL),   #"Pyromancy: Undead Rapport"
+ StartingClassData("pyromancer", item_s.ITEM_TYPE.ITEM, 4400, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False, pool_cfg=StartingClassData.POOL_CFG.ORIGINAL_AND_NEW),   #"Pyromancy: Power Within"
+ StartingClassData("pyromancer", item_s.ITEM_TYPE.ITEM, 4530, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False, pool_cfg=StartingClassData.POOL_CFG.NEW),   #"Pyromancy: Black Flame"
  StartingClassData("cleric", item_s.ITEM_TYPE.WEAPON, 1360000, [StartingClassData.CHR_INIT.WEP_R2]),
  StartingClassData("cleric", item_s.ITEM_TYPE.WEAPON, 1361000, [StartingClassData.CHR_INIT.WEP_R2]),
  StartingClassData("cleric", item_s.ITEM_TYPE.WEAPON, 1362000, [StartingClassData.CHR_INIT.WEP_R2]),
  StartingClassData("cleric", item_s.ITEM_TYPE.WEAPON, 1365000, [StartingClassData.CHR_INIT.WEP_R2]),
- StartingClassData("cleric", item_s.ITEM_TYPE.ITEM, 5000, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False),
- StartingClassData("cleric", item_s.ITEM_TYPE.ITEM, 5020, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False),
- StartingClassData("cleric", item_s.ITEM_TYPE.ITEM, 5300, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False),
- StartingClassData("cleric", item_s.ITEM_TYPE.ITEM, 5400, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False),
- StartingClassData("cleric", item_s.ITEM_TYPE.ITEM, 5600, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False)
+ StartingClassData("cleric", item_s.ITEM_TYPE.ITEM, 5000, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False, pool_cfg=StartingClassData.POOL_CFG.ORIGINAL_AND_NEW),   #"Miracle: Heal" Faith:12
+ StartingClassData("cleric", item_s.ITEM_TYPE.ITEM, 5020, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False, pool_cfg=StartingClassData.POOL_CFG.ORIGINAL_AND_NEW),   #"Great Heal Excerpt" Fatih:13
+ StartingClassData("cleric", item_s.ITEM_TYPE.ITEM, 5300, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False, pool_cfg=StartingClassData.POOL_CFG.ORIGINAL_AND_NEW),   #"Miracle: Force" Faith:12
+ StartingClassData("cleric", item_s.ITEM_TYPE.ITEM, 5400, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False, pool_cfg=StartingClassData.POOL_CFG.ORIGINAL),   #"Seek Guidance" Faith:12
+ StartingClassData("cleric", item_s.ITEM_TYPE.ITEM, 5600, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False, pool_cfg=StartingClassData.POOL_CFG.ORIGINAL),    #"Miracle: Magic Barrier" Faith:14
+ StartingClassData("cleric", item_s.ITEM_TYPE.ITEM, 5500, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False, pool_cfg=StartingClassData.POOL_CFG.NEW),    #"Miracle: Lightning Spear" Faith:20
+ StartingClassData("cleric", item_s.ITEM_TYPE.ITEM, 5510, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False, pool_cfg=StartingClassData.POOL_CFG.NEW),   #"Miracle: Great Lightning Spear" Faith:30
+ StartingClassData("cleric", item_s.ITEM_TYPE.ITEM, 5310, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False, pool_cfg=StartingClassData.POOL_CFG.NEW),    #"Miracle: Wrath of the Gods" Faith:28
+ StartingClassData("cleric", item_s.ITEM_TYPE.ITEM, 5320, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False, pool_cfg=StartingClassData.POOL_CFG.NEW),    #"Miracle: Emit Force" Faith:18
+ StartingClassData("cleric", item_s.ITEM_TYPE.ITEM, 5900, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False, pool_cfg=StartingClassData.POOL_CFG.NEW),    #"Miracle: Sunlight Blade" Faith:30
+ StartingClassData("cleric", item_s.ITEM_TYPE.ITEM, 5100, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False, pool_cfg=StartingClassData.POOL_CFG.NEW),    #"Miracle: Gravelord Sword Dance" Faith:0
+ StartingClassData("cleric", item_s.ITEM_TYPE.ITEM, 5110, [StartingClassData.CHR_INIT.SPELL_1, StartingClassData.CHR_INIT.ITEM_1], should_pass_to_items = False, pool_cfg=StartingClassData.POOL_CFG.NEW)    #"Miracle: Gravelord Greatsword Dance" Faith:0
 ]
 
 def create_starting_class_weapon_data(chr_init_param, rand_options):
@@ -1061,7 +1087,10 @@ def create_starting_class_weapon_data(chr_init_param, rand_options):
 
 def randomize_starting_chr_weapons(chr_init_param, rand_options, random_source):
     starting_class_weapon_data = create_starting_class_weapon_data(chr_init_param, rand_options)
-    joined_data = starting_class_weapon_data + EXTRA_DATA
+
+    extra_data = [item for item in EXTRA_DATA if ((rand_options.better_start_spells and item.pool_config>=StartingClassData.POOL_CFG.ORIGINAL_AND_NEW) or (not rand_options.better_start_spells and item.pool_config<=StartingClassData.POOL_CFG.ORIGINAL_AND_NEW))]
+
+    joined_data = starting_class_weapon_data + extra_data
     
     data_passed_to_items = {}
     for class_name in CLASS_TO_CHR_INIT:

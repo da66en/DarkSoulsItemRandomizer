@@ -32,15 +32,21 @@ INI_FILE = "randomizer.ini"
 
 MAX_SEED_LENGTH = 64
 
-VERSION_NUM = "0.7.2"
+VERSION_NUM = "0.7.2+xyz"
 # only add versions compatible RNG-wise, IE when fixing GUI stuff
 COMPATIBLE_VERSIONS = [VERSION_NUM, ]
 
-PTDE_GAMEPARAM_PATH_LIST = ["./GameParam.parambnd", "./param/GameParam/GameParam.parambnd", "C:\Program Files (x86)\Steam\steamapps\common\Dark Souls Prepare to Die Edition\DATA\param\GameParam\GameParam.parambnd", "C:\Programs\Steam\steamapps\common\Dark Souls Prepare to Die Edition\DATA\param\GameParam\GameParam.parambnd"]
-DS1R_GAMEPARAM_PATH_LIST = ["./GameParam.parambnd.dcx", "./param/GameParam/GameParam.parambnd.dcx", "D:\SteamLibrary\steamapps\common\DARK SOULS REMASTERED\param\GameParam\GameParam.parambnd.dcx", "D:\Program Files (x86)\Steam\steamapps\common\DARK SOULS REMASTERED\param\GameParam\GameParam.parambnd.dcx", "C:\programs\Steam\steamapps\common\DARK SOULS REMASTERED\param\GameParam\GameParam.parambnd.dcx"]
+#PTDE_GAMEPARAM_PATH_LIST = ["./GameParam.parambnd", "./param/GameParam/GameParam.parambnd", "C:\Program Files (x86)\Steam\steamapps\common\Dark Souls Prepare to Die Edition\DATA\param\GameParam\GameParam.parambnd", "C:\Programs\Steam\steamapps\common\Dark Souls Prepare to Die Edition\DATA\param\GameParam\GameParam.parambnd"]
+#DS1R_GAMEPARAM_PATH_LIST = ["./GameParam.parambnd.dcx", "./param/GameParam/GameParam.parambnd.dcx", "D:\SteamLibrary\steamapps\common\DARK SOULS REMASTERED\param\GameParam\GameParam.parambnd.dcx", "D:\Program Files (x86)\Steam\steamapps\common\DARK SOULS REMASTERED\param\GameParam\GameParam.parambnd.dcx", "C:\programs\Steam\steamapps\common\DARK SOULS REMASTERED\param\GameParam\GameParam.parambnd.dcx"]
 
-PTDE_ENGMENU_PATH_LIST = ["./msg/ENGLISH/menu.msgbnd", "C:\Program Files (x86)\Steam\steamapps\common\Dark Souls Prepare to Die Edition\DATA\msg\ENGLISH\menu.msgbnd", "C:\Programs\Steam\steamapps\common\Dark Souls Prepare to Die Edition\DATA\msg\ENGLISH\menu.msgbnd"]
-DS1R_ENGMENU_PATH_LIST = ["./msg/ENGLISH/menu.msgbnd.dcx", "D:\SteamLibrary\steamapps\common\DARK SOULS REMASTERED\msg\ENGLISH\menu.msgbnd.dcx", "D:\Program Files (x86)\Steam\steamapps\common\DARK SOULS REMASTERED\msg\ENGLISH\menu.msgbnd.dcx", "C:\Programs\Steam\steamapps\common\DARK SOULS REMASTERED\msg\ENGLISH\menu.msgbnd.dcx"]
+#PTDE_ENGMENU_PATH_LIST = ["./msg/ENGLISH/menu.msgbnd", "C:\Program Files (x86)\Steam\steamapps\common\Dark Souls Prepare to Die Edition\DATA\msg\ENGLISH\menu.msgbnd", "C:\Programs\Steam\steamapps\common\Dark Souls Prepare to Die Edition\DATA\msg\ENGLISH\menu.msgbnd"]
+#DS1R_ENGMENU_PATH_LIST = ["./msg/ENGLISH/menu.msgbnd.dcx", "D:\SteamLibrary\steamapps\common\DARK SOULS REMASTERED\msg\ENGLISH\menu.msgbnd.dcx", "D:\Program Files (x86)\Steam\steamapps\common\DARK SOULS REMASTERED\msg\ENGLISH\menu.msgbnd.dcx", "C:\Programs\Steam\steamapps\common\DARK SOULS REMASTERED\msg\ENGLISH\menu.msgbnd.dcx"]
+
+PTDE_GAMEPARAM_PATH_LIST = ["./GameParam.parambnd", "./param/GameParam/GameParam.parambnd", "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Dark Souls Prepare to Die Edition\\DATA\\param\\GameParam\\GameParam.parambnd", "C:\\Programs\\Steam\\steamapps\\common\\Dark Souls Prepare to Die Edition\\DATA\\param\\GameParam\\GameParam.parambnd"]
+DS1R_GAMEPARAM_PATH_LIST = ["./GameParam.parambnd.dcx", "./param/GameParam/GameParam.parambnd.dcx", "D:\\SteamLibrary\\steamapps\\common\\DARK SOULS REMASTERED\\param\\GameParam\\GameParam.parambnd.dcx", "D:\\Program Files (x86)\\Steam\\steamapps\\common\\DARK SOULS REMASTERED\\param\\GameParam\\GameParam.parambnd.dcx", "C:\\programs\\Steam\\steamapps\\common\\DARK SOULS REMASTERED\\param\\GameParam\\GameParam.parambnd.dcx"]
+
+PTDE_ENGMENU_PATH_LIST = ["./msg/ENGLISH/menu.msgbnd", "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Dark Souls Prepare to Die Edition\\DATA\\msg\\ENGLISH\\menu.msgbnd", "C:\\Programs\\Steam\\steamapps\\common\\Dark Souls Prepare to Die Edition\\DATA\\msg\\ENGLISH\\menu.msgbnd"]
+DS1R_ENGMENU_PATH_LIST = ["./msg/ENGLISH/menu.msgbnd.dcx", "D:\\SteamLibrary\\steamapps\\common\\DARK SOULS REMASTERED\\msg\\ENGLISH\\menu.msgbnd.dcx", "D:\\Program Files (x86)\\Steam\\steamapps\\common\\DARK SOULS REMASTERED\\msg\\ENGLISH\\menu.msgbnd.dcx", "C:\\Programs\\Steam\\steamapps\\common\\DARK SOULS REMASTERED\\msg\\ENGLISH\\menu.msgbnd.dcx"]
 
 DESC_DICT = {
     "diff": {rngopts.RandOptDifficulty.EASY: "* Perfectly fair. Items have an equal chance to be placed anywhere.\n", 
@@ -643,6 +649,7 @@ class MainGUI:
         ilp_binary_export = result_ilp.export_as_binary()
         result_slp = table.build_shoplineup()
         slp_binary_export = result_slp.export_as_binary()
+        chr_cheatsheet = randomized_chr_data.return_cheatsheet()
         cip_binary_export = randomized_chr_data.export_as_binary()
         cheat_string = table.build_cheatsheet(show_event_flags=False)
         hint_string = table.build_hintsheet()
@@ -669,7 +676,7 @@ class MainGUI:
         with open(CHRINIT_FILEPATH, 'wb') as f:
             f.write(cip_binary_export)
         with open(CHEATSHEET_FILEPATH, 'w') as f:
-            f.write(cheat_string)
+            f.write(cheat_string + chr_cheatsheet)
         with open(HINTSHEET_FILEPATH, 'w') as f:
             f.write(hint_string)
         with open(SEEDINFO_FILEPATH, 'w') as f:
@@ -869,7 +876,7 @@ class MainGUI:
             if is_remastered:
                 if options.set_up_hints:
                     for index, (file_id, filepath, filedata) in enumerate(enmenu_content_list):
-                        if (filepath == "N:\FRPG\data\Msg\Data_ENGLISH\Blood_writing_.fmg"):
+                        if (filepath == "N:\\FRPG\\data\\Msg\\Data_ENGLISH\\Blood_writing_.fmg"):
                             fmgData = FMGHandler(FMGHandler.load_from_file_content(filedata))
                             item_table.hint_builder.AddHintsToBloodMessages(fmgData, rng)
                             enmenu_content_list[index] = (file_id, filepath, fmgData.export_as_binary())

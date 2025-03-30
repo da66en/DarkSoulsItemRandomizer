@@ -1,3 +1,6 @@
+xyz
+- Re-tooled the starting spells to give more combat effective spells, especially the Cleric.  Seemed like an important de-nerf in the rando as otherwise you hardly find a use for Faith.  Also display the starting items and spells in the cheatsheet.
+
 0.7.2
 - Fix for 'Write Seed Cheatsheet' crashing.  It's not showing SyncNum or showing 'Seek Guidance hints', to be fixed later.
 
