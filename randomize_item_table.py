@@ -146,6 +146,20 @@ def transmute_itemlotpart_to_consumable(itemlotpart, random_source):
     log.debug("Transmuting itemlotpart into consumable (" + str(cons_type) + ", " +
      str(cons_id) + ", " + str(cons_count) + ")")
     return itemlotpart
+
+def transmute_itemlotparts_to_bk_replacement(itemlotpart, random_source):
+    if itemlotpart.items:
+        for itemlotentry in itemlotpart.items:
+            if (itemlotentry.item_type == item_s.ITEM_TYPE.WEAPON and 
+             itemlotentry.item_id in item_s.BLACK_KNIGHT_WEAPONS):
+                (cons_type, cons_id, cons_count_min, cons_count_max) = random_source.choice(sorted(item_s.BLACK_KNIGHT_WEAPON_REPLACEMENTS))
+                cons_count = random_source.randrange(cons_count_min, cons_count_max + 1)
+                itemlotentry.item_type = cons_type
+                itemlotentry.item_id = cons_id
+                itemlotentry.count = cons_count
+                log.debug("Transmuting itemlotpart into black knight replacement (" + str(cons_type) + ", " +
+                    str(cons_id) + ")")
+    return itemlotpart
    
 def transmute_itemlotpart_to_boss_item(itemlotpart, random_source):
     if itemlotpart.items:
@@ -388,6 +402,10 @@ def place_non_key_fixed_items(table, rand_options, random_source, item_list):
         # Optionally randomly ascend weapons.
         if rand_options.ascend_weapons == True:
             item = ascend_itemlotpart_to_ascended_item(item, random_source)
+
+        # Remove Black Knight weapons
+        if rand_options.no_black_knight_weapons:
+            item = transmute_itemlotparts_to_bk_replacement(item, random_source)
         
         # Place item.
         possible_loc_ids = create_random_placement_list(table, 
@@ -459,6 +477,7 @@ if __name__ == "__main__":
       rng_opt.RandOptSoulItemsDifficulty.SHUFFLE,
       rng_opt.RandOptStartItemsDifficulty.COMBINED_POOL_AND_2H,
       rng_opt.RandOptGameVersion.PTDE,
+      False,
       False,
       False,
       False)

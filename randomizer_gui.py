@@ -89,9 +89,11 @@ DESC_DICT = {
     "set_up_hints": {True: "* The dev messages visibile with Seek Guidance will have \n   hints automatically added in.\n", 
         False: "* There are no hints that are added to the seed via Seek Guidance.\n\n"},
     "keys_not_in_dlc": {True: "* Key items will NOT be in DLC (Painted World, Artorias of the Abyss).\n",
-        False: "* Key items can be in DLC (Painted World, Artorias of the Abyss).\n"}
+        False: "* Key items can be in DLC (Painted World, Artorias of the Abyss).\n"},
+    "no_black_knight_weapons": {True: "* Black Knight weapons replaced by Titanite Chunks and Slabs.\n",
+        False: "* Black Knight weapons are available for use.\n"}
 }
-DESC_ORDER = ["diff", "key_diff", "souls_diff", "keys_not_in_dlc", "start_items", "fashion", "npc_armor", "use_lv", "use_lord_souls", "ascend_weapons", "set_up_hints"]
+DESC_ORDER = ["diff", "key_diff", "souls_diff", "keys_not_in_dlc", "start_items", "fashion", "npc_armor", "use_lv", "use_lord_souls", "ascend_weapons", "set_up_hints", "no_black_knight_weapons"]
 
 
 def resource_path(rel_path):
@@ -326,7 +328,16 @@ class MainGUI:
          width=10, anchor=tk.W)
         self.keys_not_in_dlc_check.grid(row=5, column=0, sticky='W')
         self.setup_hover_events(self.keys_not_in_dlc_check, {"keys_not_in_dlc": None}, no_emph = True)
-        
+
+        self.no_black_knight_weapons = tk.BooleanVar()
+        self.no_black_knight_weapons.set(ini_parser.get_option_value(init_options, "no_black_knight_weapons"))
+        self.no_black_knight_weapons.trace('w', lambda name, index, mode: self.update())
+        self.no_black_knight_weapons_gui = tk.Checkbutton(self.misc_flags_frame, text="No Black Knight Weapons", 
+         variable=self.no_black_knight_weapons, onvalue=True, offvalue=False,   #, padx=2,
+         width=20, anchor=tk.W)
+        self.no_black_knight_weapons_gui.grid(row=6, column=0, sticky='W')
+        self.setup_hover_events(self.no_black_knight_weapons_gui, {"no_black_knight_weapons": None}, no_emph = True)
+
         self.export_button = tk.Button(self.root, text="Scramble Items &\nExport to GameParam", 
          padx=10, pady=10, command=self.export_to_gameparam)
         self.export_button.grid(row=8, rowspan=3, column=4, padx=2, sticky='EW')
@@ -354,6 +365,7 @@ class MainGUI:
             SettingsVariable(name='nodlc', variable=self.keys_not_in_dlc, options=DESC_DICT['keys_not_in_dlc'].keys()),
             SettingsVariable(name='aw', variable=self.ascend_weapons_bool, options=DESC_DICT['ascend_weapons'].keys()),
             SettingsVariable(name='hints', variable=self.set_up_hints, options=DESC_DICT['set_up_hints'].keys()),
+            SettingsVariable(name='nobkw', variable=self.no_black_knight_weapons, options=DESC_DICT['no_black_knight_weapons'].keys()),
         ], call_after_update=self.update_desc)
 
         self.update_desc()
@@ -495,6 +507,7 @@ class MainGUI:
             "ascend_weapons": (self.ascend_weapons_bool.get(), DescriptionState.NORMAL),
             "set_up_hints": (self.set_up_hints.get(), DescriptionState.NORMAL),
             "keys_not_in_dlc": (self.keys_not_in_dlc.get(), DescriptionState.NORMAL),
+            "no_black_knight_weapons": (self.no_black_knight_weapons.get(), DescriptionState.NORMAL),
         }
         return DescriptionState(desc_specifiers, self.desc_area)
         
@@ -584,7 +597,7 @@ class MainGUI:
          self.key_diff.get(), self.use_lordvessel.get(), self.use_lord_souls.get(), 
          self.soul_diff.get(), self.start_items_diff.get(), self.game_version.get(),
          self.npc_armor_bool.get(), self.ascend_weapons_bool.get(), self.keys_not_in_dlc.get(),
-         self.set_up_hints.get())
+         self.set_up_hints.get(), self.no_black_knight_weapons.get())
 
         if self.save_options.get():
             ini_parser.save_ini(INI_FILE, options)        #save options right before creating seed

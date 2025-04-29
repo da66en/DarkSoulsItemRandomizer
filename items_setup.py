@@ -2084,6 +2084,26 @@ RANDOM_CONSUMABLES = [
  (ITEM_TYPE.WEAPON, 2104000, 10, 50) # Lightning Bolt
 ]
 
+# (consumable_type, consumable_id, min_amount, max_amount)
+BLACK_KNIGHT_WEAPON_REPLACEMENTS = [
+    (ITEM_TYPE.ITEM, 1030, 2, 3),   # "Titanite Chunk"
+    (ITEM_TYPE.ITEM, 1040, 2, 3),   # "Blue Titanite Chunk"
+    (ITEM_TYPE.ITEM, 1050, 2, 3),   # "White Titanite Chunk"
+    (ITEM_TYPE.ITEM, 1060, 2, 3),   # "Red Titanite Chunk"
+    (ITEM_TYPE.ITEM, 1070, 1, 1),   # "Titanite Slab"
+    (ITEM_TYPE.ITEM, 1080, 1, 1),   # "Blue Titanite Slab"
+    (ITEM_TYPE.ITEM, 1090, 1, 1),   # "White Titanite Slab"
+    (ITEM_TYPE.ITEM, 1100, 1, 1),   # "Red Titanite Slab"
+    (ITEM_TYPE.ITEM, 1120, 2, 3),   # "Demon Titanite" 
+]
+
+BLACK_KNIGHT_WEAPONS = [
+    310000, #" Black Knight Sword"
+    355000, #" Black Knight Greatsword"
+    753000, # "Black Knight Greataxe"
+    1105000 # "Black Knight Halberd", 
+]
+
 def boss_weapon_list_helper(min_index, max_index):
     return [(ITEM_TYPE.WEAPON, i) for i in range(min_index, max_index+1, 100)]
 
