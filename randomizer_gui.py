@@ -1,5 +1,4 @@
 # TODO: is lightning spear, great lightening spear and sunlight spear being shuffled in?
-# TODO: add option to remove black knight weapons
 # TODO: generate cheat sheet doesn't do seek guidance hints or show sync-num
 
 import tkinter as tk

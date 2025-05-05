@@ -79,7 +79,9 @@ TRASH_HINTS = {
     "Never go in against a Sicilian when death is on the line!",
     "Kneel before Zod.",
     "There might be a Donkey Kong kill screen coming up.",
-    "Shouldn't we wait for Jarnathan?"
+    "Shouldn't we wait for Jarnathan?",
+    "Welcome to Lee Carvallo's Putting Challenge",
+    "You must construct additional pylons!"
 }
 
 USEFUL_LOCATIONS = {

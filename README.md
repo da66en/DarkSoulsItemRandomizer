@@ -278,6 +278,8 @@ Seek Guidance Help: If active, useful hints replace the dev messages that appear
       1700050: The Duke's Archives Chest #2
               (In the room with broken machinery; a fog gate nearby leads to the 
                outside grounds and Crystal Cave. Normally holds Prism Stone x20.)
+      1700200: The Duke's Archives - Big Hat Logan's cell
+              (Requires Archive Tower Giant Cell Key to open.)
       1700210: The Duke's Archives - Archive Prison Extra Key Original Location
               (In a side cell in the Prison. The cell's door can be opened using the
                Archive Tower Cell Key, which is always dropped by the sleeping Serpent

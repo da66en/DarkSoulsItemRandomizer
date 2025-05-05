@@ -1,6 +1,7 @@
 Unreleased
 - Re-tooled the starting spells to give more combat effective spells, especially the Cleric.  Seemed like an important de-nerf in the rando as otherwise you hardly find a use for Faith.  Also display the starting items and spells in the cheatsheet. (da66en)
 - Added option to remove Black Knight weapons (da66en)
+- Cell at the end of Duke's Prison (where Big Hat Logan is imprisoned) is now a possible Race Mode Key Location.  Without this change the Archive Tower Giant Cell Key is not very useful.
 
 0.7.2
 - Fix for 'Write Seed Cheatsheet' crashing.  It's not showing SyncNum or showing 'Seek Guidance hints', to be fixed later.

@@ -799,7 +799,7 @@ LOCATIONS = {
  1700160: Location(LOC_DIF.HARD, AREA.CRYSTAL_CAVE, 9),
  1700170: Location(LOC_DIF.MEDIUM, AREA.CRYSTAL_CAVE, 9),
  1700180: Location(LOC_DIF.EASY, AREA.CRYSTAL_CAVE, 9),
- 1700200: Location(LOC_DIF.HARD, AREA.DUKES_PRISON_GIANT_CELL, 9),
+ 1700200: Location(LOC_DIF.HARD, AREA.DUKES_PRISON_GIANT_CELL, 9, is_race_key_loc = True),
  1700210: Location(LOC_DIF.HARD, AREA.DUKES_PRISON, 9, is_race_key_loc = True, default_key = "archive_prison_extra_key"),
  1700510: Location(LOC_DIF.EASY, AREA.DUKES_ARCHIVES, 9, is_race_key_loc = True),
  1700520: Location(LOC_DIF.MEDIUM, AREA.DUKES_ARCHIVES, 9, is_race_key_loc = True),
