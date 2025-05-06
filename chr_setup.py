@@ -984,7 +984,7 @@ class StartingClassData:
         ORIGINAL_AND_NEW = 1
         NEW = 2
         
-    def __init__(self, class_name, item_type, item, chr_init_fields, item_quantity = 1, should_pass_to_items = True, pool_cfg = POOL_CFG.ORIGINAL):
+    def __init__(self, class_name, item_type, item, chr_init_fields, item_quantity = 1, should_pass_to_items = True, pool_cfg = POOL_CFG.ORIGINAL_AND_NEW):
         self.class_name = class_name
         self.item_type = item_type
         self.item = item
@@ -1088,7 +1088,7 @@ def create_starting_class_weapon_data(chr_init_param, rand_options):
 def randomize_starting_chr_weapons(chr_init_param, rand_options, random_source):
     starting_class_weapon_data = create_starting_class_weapon_data(chr_init_param, rand_options)
 
-    extra_data = [item for item in EXTRA_DATA if ((rand_options.better_start_spells and item.pool_config>=StartingClassData.POOL_CFG.ORIGINAL_AND_NEW) or (not rand_options.better_start_spells and item.pool_config<=StartingClassData.POOL_CFG.ORIGINAL_AND_NEW))]
+    extra_data = [item for item in EXTRA_DATA if ((rand_options.better_start_spells and (item.pool_config>=StartingClassData.POOL_CFG.ORIGINAL_AND_NEW)) or (not rand_options.better_start_spells and (item.pool_config<=StartingClassData.POOL_CFG.ORIGINAL_AND_NEW)))]
 
     joined_data = starting_class_weapon_data + extra_data
     

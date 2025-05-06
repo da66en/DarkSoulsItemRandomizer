@@ -1,31 +1,41 @@
-Unreleased
-- Re-tooled the starting spells to give more combat effective spells, especially the Cleric.  Seemed like an important de-nerf in the rando as otherwise you hardly find a use for Faith.  Also display the starting items and spells in the cheatsheet. (da66en)
-- Added option to remove Black Knight weapons (da66en)
-- Cell at the end of Duke's Prison (where Big Hat Logan is imprisoned) is now a possible Race Mode Key Location.  Without this change the Archive Tower Giant Cell Key is not very useful.
+0.8.0
+- Re-tooled the starting spells to give more combat effective spells, especially the Cleric.  Seemed like an important de-nerf in the rando as otherwise you hardly find a use for Faith.  Also display the starting items and spells in the cheatsheet. (@da66en)
+- Added option to remove Black Knight weapons (@da66en)
+- Cell at the end of Duke's Prison (where Big Hat Logan is imprisoned) is now a possible Race Mode Key Location.  Without this change the Archive Tower Giant Cell Key is not very useful. (@da66en)
 
 0.7.2
-- Fix for 'Write Seed Cheatsheet' crashing.  It's not showing SyncNum or showing 'Seek Guidance hints', to be fixed later.
+- Fix for 'Write Seed Cheatsheet' crashing.  It's not showing SyncNum or showing 'Seek Guidance hints', to be fixed later. (@da66en)
 
 0.7.1
-- Changed radio buttons to combobox to make space on the GUI for new features (da66en)
-- Added more info to seed_info.txt so it's easier to recreate the seed (da66en)
-- Fix for 'Seek Guidance hints' settings choice not affecting SyncNum reported (da66en)
-- 'Seek Guidance hints' won't give hints for Lordvessel or Lord Souls if they are not randomized, or give hintes for DLC keys or items in DLC area if not playing items in DLC area. (da66en)
-- Replaced online use items (Covenant Rings, Eye Orbs, Soapstones, Dried Fingers, etc) with random consumables (da66en)
-- Don't let Sunlight Maggot Helm be placed in Tomb of the Giants (da66en)
-- Fix for key items being placed in Chasm of the Abyss even if 'No DLC' was set (da66en)
+- Changed radio buttons to combobox to make space on the GUI for new features (@da66en)
+- Added more info to seed_info.txt so it's easier to recreate the seed (@da66en)
+- Fix for 'Seek Guidance hints' settings choice not affecting SyncNum reported (@da66en)
+- 'Seek Guidance hints' won't give hints for Lordvessel or Lord Souls if they are not randomized, or give hintes for DLC keys or items in DLC area if not playing items in DLC area. (@da66en)
+- Replaced online use items (Covenant Rings, Eye Orbs, Soapstones, Dried Fingers, etc) with random consumables (@da66en)
+- Don't let Sunlight Maggot Helm be placed in Tomb of the Giants (@da66en)
+- Fix for key items being placed in Chasm of the Abyss even if 'No DLC' was set (@da66en)
 
 0.7.0
-- Adds 'Revert to Vanilla' (AzetinnitezA)
-- Adds copy to clipboard and paste from clipboard seed and settings on right mouse click (eaglevis)
-- Fix for 'Seek Guidance' not working (da66en)
+- Adds 'Revert to Vanilla' (@AzetinnitezA)
+- Adds copy to clipboard and paste from clipboard seed and settings on right mouse click (@eaglevis)
+- Fix for 'Seek Guidance' not working (@da66en)
 
 0.6.3
-- Adds debug file output for in-game hints. (AbscondWithAPie)
-- removed 'cast light' from key items, made 'sunlight maggot helm' a key item instead. (da66en)
-- added 'No DLC' option.  Key items will NOT be in Painted World or Artorias of the Abyss DLC locations.  Also keys needed for those areas will not be placed outside of these areas, to prevent you from getting keys in sections that aren't needed.  (da66en)
-- added 'Lordvessel @ Firelink' option.  The Lordvessel is at Firelink Shrine, which significantly speeds up the game. (da66en)
-- 'Seek Guidance Help' is actually followed, and won't cause PTDE to crash.  I have doubts 'Seek Guidance Help' works as it uses hard coded directory locations on the N:\ drive. (da66en)
-- 'Seek Guidance Help' added to the .ini file saving/loading. (da66en)
-- Changed the about screen to show all the developers who have worked on the Dark Souls Item Randomizer. (da66en)
-- Disable and clear 'Seek Guidance' if PTDE version is being used. (da66en)
+- Adds debug file output for in-game hints. (@AbscondWithAPie)
+- removed 'cast light' from key items, made 'sunlight maggot helm' a key item instead. (@da66en)
+- added 'No DLC' option.  Key items will NOT be in Painted World or Artorias of the Abyss DLC locations.  Also keys needed for those areas will not be placed outside of these areas, to prevent you from getting keys in sections that aren't needed.  (@da66en)
+- added 'Lordvessel @ Firelink' option.  The Lordvessel is at Firelink Shrine, which significantly speeds up the game. (@da66en)
+- 'Seek Guidance Help' is actually followed, and won't cause PTDE to crash.  I have doubts 'Seek Guidance Help' works as it uses hard coded directory locations on the N:\ drive. (@da66en)
+- 'Seek Guidance Help' added to the .ini file saving/loading. (@da66en)
+- Changed the about screen to show all the developers who have worked on the Dark Souls Item Randomizer. (@da66en)
+- Disable and clear 'Seek Guidance' if PTDE version is being used. (@da66en)
+
+v0.5.1
+- Added Seek Guidance hints; useful hints replace the dev messages that appear when using the Seek Guidance miracle. See README.md for more information. (@forstycup)
+
+v0.4.0
+- Added eager smiths mode: select this option to have weapons randomly ascended with an ember. No more are you chained by the shackles of Black Knight Weaponry (@caerulius)
+- Added .ini file to allow for settings saving. Creates a .ini file in the same directory as the randomizer, and checking the "save these settings" box will save your settings to this file the next time you create a seed (Thanks to @Stochast1c for this!)
+
+v0.3.0 and v0.2.1
+- Original releases by @HotPocketRemix
