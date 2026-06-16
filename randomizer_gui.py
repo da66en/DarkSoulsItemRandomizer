@@ -443,6 +443,7 @@ class MainGUI:
             if os.path.isfile(normed_path):
                 gameparam_filepath = normed_path
                 gameparambak_filepath = normed_path + ".bak"
+                break
 
         #if gameparam_filepath == "" or not os.path.isfile(gameparam_filepath):
         #    self.show_error("GameParam.parambnd is missing or cannot be opened. File could not be located.")
@@ -470,6 +471,7 @@ class MainGUI:
             if os.path.isfile(normed_path):
                 enmenu_filepath = normed_path
                 enmenubak_filepath = normed_path + ".bak"
+                break
 
         #if enmenu_filepath == "" or not os.path.isfile(enmenu_filepath):
         #    self.show_error("ENGLISH/menu.msgbnd is missing or cannot be opened. File could not be located.")
@@ -733,6 +735,7 @@ class MainGUI:
             if os.path.isfile(normed_path):
                 gameparam_filepath = normed_path
                 gameparambak_filepath = normed_path + ".bak"
+                break
 
         # find our menu text file
         has_engmenu = False
@@ -742,6 +745,7 @@ class MainGUI:
                 has_engmenu = True
                 enmenu_filepath = normed_path
                 enmenubak_filepath = normed_path + ".bak"
+                break
                 
         is_remastered = (self.game_version.get() == rngopts.RandOptGameVersion.REMASTERED)
         
