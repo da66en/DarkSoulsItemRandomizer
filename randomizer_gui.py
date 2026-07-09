@@ -31,7 +31,7 @@ INI_FILE = "randomizer.ini"
 
 MAX_SEED_LENGTH = 64
 
-VERSION_NUM = "0.8.0"
+VERSION_NUM = "0.8.1"
 # only add versions compatible RNG-wise, IE when fixing GUI stuff
 COMPATIBLE_VERSIONS = [VERSION_NUM, ]
 
@@ -423,6 +423,7 @@ class MainGUI:
         self.msg_area.insert("end", "\t\tAzetinnitezA\n")
         self.msg_area.insert("end", "\t\teaglevis\n")
         self.msg_area.insert("end", "\t\tda66en\n")
+        self.msg_area.insert("end", "\t\tPrimogenitor33\n")
         self.msg_area.config(state="disabled")
         self.msg_area.lift()
         self.back_button.lift()
@@ -443,6 +444,7 @@ class MainGUI:
             if os.path.isfile(normed_path):
                 gameparam_filepath = normed_path
                 gameparambak_filepath = normed_path + ".bak"
+                break
 
         #if gameparam_filepath == "" or not os.path.isfile(gameparam_filepath):
         #    self.show_error("GameParam.parambnd is missing or cannot be opened. File could not be located.")
@@ -470,6 +472,7 @@ class MainGUI:
             if os.path.isfile(normed_path):
                 enmenu_filepath = normed_path
                 enmenubak_filepath = normed_path + ".bak"
+                break
 
         #if enmenu_filepath == "" or not os.path.isfile(enmenu_filepath):
         #    self.show_error("ENGLISH/menu.msgbnd is missing or cannot be opened. File could not be located.")
@@ -733,6 +736,7 @@ class MainGUI:
             if os.path.isfile(normed_path):
                 gameparam_filepath = normed_path
                 gameparambak_filepath = normed_path + ".bak"
+                break
 
         # find our menu text file
         has_engmenu = False
@@ -742,6 +746,7 @@ class MainGUI:
                 has_engmenu = True
                 enmenu_filepath = normed_path
                 enmenubak_filepath = normed_path + ".bak"
+                break
                 
         is_remastered = (self.game_version.get() == rngopts.RandOptGameVersion.REMASTERED)
         
