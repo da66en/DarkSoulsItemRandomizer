@@ -1,3 +1,6 @@
+0.8.1
+- When searching for Dark Souls game files to randomize, stop searching the list after it is found.  This prioritizes the relative path, meaning if you put the randomizer EXE in the same folder as the Dark Souls folder you want to randomize it will not accidentally grab another folder on the machine if you have several Dark Souls installed. (@Primogenitor33)
+
 0.8.0
 - Re-tooled the starting spells to give more combat effective spells, especially the Cleric.  Seemed like an important de-nerf in the rando as otherwise you hardly find a use for Faith.  Also display the starting items and spells in the cheatsheet. (@da66en)
 - Added option to remove Black Knight weapons (@da66en)
