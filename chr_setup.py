@@ -1199,7 +1199,21 @@ STARTING_CLASS_STAT_FIELDS = [
 STARTING_CLASS_MIN_STAT = 8
 STARTING_CLASS_MAX_STAT = 15
 
+# Classes whose randomized stats must leave them able to attune a spell.
+STARTING_CLASS_MIN_ATTUNEMENT = {
+ "sorcerer": 10,
+ "pyromancer": 10,
+ "cleric": 10
+}
+
+def get_starting_class_min_attunement(chr_init):
+    for (class_name, chr_init_ids) in CLASS_TO_CHR_INIT.items():
+        if chr_init.chr_init_id in chr_init_ids:
+            return STARTING_CLASS_MIN_ATTUNEMENT.get(class_name, 0)
+    return 0
+
 def randomize_starting_stats_for_chr(chr_init, random_source):
+    min_attunement = get_starting_class_min_attunement(chr_init)
     original_stats = [getattr(chr_init, field) for field in STARTING_CLASS_STAT_FIELDS]
     total_stats = sum(original_stats)
     stat_count = len(STARTING_CLASS_STAT_FIELDS)
@@ -1222,8 +1236,24 @@ def randomize_starting_stats_for_chr(chr_init, random_source):
         remaining_stats -= 1
 
     random_source.shuffle(stats)
-    for (field, stat) in zip(STARTING_CLASS_STAT_FIELDS, stats):
-        setattr(chr_init, field, stat)
+    stats_by_field = dict(zip(STARTING_CLASS_STAT_FIELDS, stats))
+
+    # Casting classes need enough attunement for a spell slot. Take the
+    # missing points one at a time from random other stats that are above
+    # the minimum, so the total stat budget stays the same.
+    deficit = min_attunement - stats_by_field["base_att"]
+    while deficit > 0:
+        donors = [field for field in STARTING_CLASS_STAT_FIELDS
+         if field != "base_att" and stats_by_field[field] > STARTING_CLASS_MIN_STAT]
+        if not donors:
+            raise ValueError("Could not raise starting class attunement to " + str(min_attunement) + ".")
+        donor = random_source.choice(donors)
+        stats_by_field[donor] -= 1
+        stats_by_field["base_att"] += 1
+        deficit -= 1
+
+    for field in STARTING_CLASS_STAT_FIELDS:
+        setattr(chr_init, field, stats_by_field[field])
 
 def randomize_starting_stats(chr_init_param, random_source):
     for class_name in CLASS_TO_CHR_INIT:
