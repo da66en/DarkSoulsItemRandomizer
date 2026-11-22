@@ -32,7 +32,31 @@ INI_FILE = "randomizer.ini"
 
 MAX_SEED_LENGTH = 64
 
-VERSION_NUM = "1.0.4"
+# Save folders live under <Documents>\NBGI\.
+PTDE_SAVE_FOLDER_NAME = "DarkSouls"
+DS1R_SAVE_FOLDER_NAME = "DARK SOULS REMASTERED"
+
+def get_documents_dirs():
+    """Every plausible Documents folder: the shell's (follows OneDrive/redirection) plus the defaults."""
+    dirs = []
+    try:
+        import ctypes
+        from ctypes import wintypes
+        buf = ctypes.create_unicode_buffer(wintypes.MAX_PATH)
+        CSIDL_PERSONAL = 5
+        if ctypes.windll.shell32.SHGetFolderPathW(None, CSIDL_PERSONAL, None, 0, buf) == 0:
+            dirs.append(buf.value)
+    except Exception:
+        pass
+    home = os.path.expanduser("~")
+    dirs.append(os.path.join(home, "Documents"))
+    dirs.append(os.path.join(home, "OneDrive", "Documents"))
+    unique_dirs = {}
+    for d in dirs:
+        unique_dirs.setdefault(os.path.normcase(os.path.normpath(d)), os.path.normpath(d))
+    return list(unique_dirs.values())
+
+VERSION_NUM = "1.0.5"
 # only add versions compatible RNG-wise, IE when fixing GUI stuff
 COMPATIBLE_VERSIONS = [VERSION_NUM]
 
@@ -223,15 +247,18 @@ class MainGUI:
         self.normalize_button = tk.Button(self.top_button_frame, text="Revert to vanilla",
          padx=2, pady=2, command=self.normalize_game)
         self.normalize_button.grid(row=0, column=0, padx=2, sticky='W')
+        self.delete_saves_button = tk.Button(self.top_button_frame, text="Delete Saves",
+         padx=2, pady=2, command=self.delete_save_files)
+        self.delete_saves_button.grid(row=0, column=1, padx=2, sticky='W')
         self.save_options_button = tk.Button(self.top_button_frame, text="Save Defaults",
          padx=2, pady=2, command=self.save_current_options)
-        self.save_options_button.grid(row=0, column=1, padx=2, sticky='W')
+        self.save_options_button.grid(row=0, column=2, padx=2, sticky='W')
         self.dark_mode_check = tk.Checkbutton(self.top_button_frame, text="Dark mode",
          variable=self.dark_mode, onvalue=True, offvalue=False, padx=2, command=self.apply_theme)
-        self.dark_mode_check.grid(row=0, column=2, padx=2, sticky='W')
+        self.dark_mode_check.grid(row=0, column=3, padx=2, sticky='W')
         self.sellout_button = tk.Button(self.top_button_frame, text="?", bg="pale goldenrod",
          padx=2, pady=2, command=self.lift_sellout_area)
-        self.sellout_button.grid(row=0, column=3, padx=2, sticky='W')
+        self.sellout_button.grid(row=0, column=4, padx=2, sticky='W')
         
         tk.Label(self.root, text="Dark Souls Game Version:").grid(row=1, column=0, columnspan=2, sticky='W', padx=2, ipady=1)
         self.game_version = tk.StringVar()
@@ -521,6 +548,7 @@ class MainGUI:
                 "characters with modified stats from the randomizer can cause you to get banned "
                 "from the game.\n\nMake sure to delete any characters with randomized stats before "
                 "reverting to vanilla and going online."
+                "\n\nYou probably should also disable any cloud saving."
             )
 
     def randomize_starting_stats_check_clicked(self):
@@ -760,7 +788,58 @@ class MainGUI:
         shutil.copy2(enmenubak_filepath, enmenu_filepath)
 
         self.show_success("Game has been reverted to vanilla Dark Souls.")
-      
+
+    def get_save_file_paths(self):
+        if self.game_version.get() == rngopts.RandOptGameVersion.PTDE:
+            save_folder_name = PTDE_SAVE_FOLDER_NAME
+        elif self.game_version.get() == rngopts.RandOptGameVersion.REMASTERED:
+            save_folder_name = DS1R_SAVE_FOLDER_NAME
+        else:
+            return None
+
+        save_paths = {}
+        for documents_dir in get_documents_dirs():
+            save_dir = os.path.join(documents_dir, "NBGI", save_folder_name)
+            if not os.path.isdir(save_dir):
+                continue
+            # DSR keeps saves in a per-account subfolder, PTDE directly in the folder.
+            for (dirpath, dirnames, filenames) in os.walk(save_dir):
+                for filename in filenames:
+                    if filename.upper().startswith("DRAKS") and ".SL2" in filename.upper():
+                        path = os.path.normpath(os.path.join(dirpath, filename))
+                        save_paths.setdefault(os.path.normcase(path), path)
+        return sorted(save_paths.values())
+
+    def delete_save_files(self):
+        save_paths = self.get_save_file_paths()
+        if save_paths is None:
+            self.show_error("No game version selected. Could not determine which save files to delete.")
+            return
+        if not save_paths:
+            self.show_error("No " + self.game_version.get() + " save files were found.")
+            return
+
+        confirmed = tkMB.askyesno("Delete save files",
+         "This will permanently delete ALL " + self.game_version.get() + " save files (every character):\n\n" +
+         "\n".join(save_paths) + "\n\nThis cannot be undone. Continue?",
+         icon="warning", default="no")
+        if not confirmed:
+            return
+
+        failed_paths = []
+        for path in save_paths:
+            try:
+                os.remove(path)
+            except OSError as e:
+                logging.exception('Could not delete save file {}: {}'.format(path, e))
+                failed_paths.append(path)
+
+        if failed_paths:
+            self.show_error("Could not delete " + str(len(failed_paths)) + " save file(s). " +
+             "Make sure the game is closed and try again.")
+        else:
+            self.show_success("Deleted " + str(len(save_paths)) + " save file(s).")
+
     #def hyperlink_enter(self):
     #    self.msg_area.config(cursor="hand2")
     

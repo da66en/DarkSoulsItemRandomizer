@@ -1,60 +1,64 @@
+1.0.5
+- When randomizing player stats, use minimum attunement of 10 for casting classes. (@da66en)
+- Added button to delete all save files. (@da66en)
+
 1.0.4
-- Fixed randomized NPC weapon reinforcement scaling so unique +5 weapons map correctly to normal +15 weapons and vice versa.
-- Linked randomized weapon loadouts across NPC variants, matching armor variant behavior while keeping Kirk invasions unlinked for more variation.
-- Documented NPC IDs in weapon category profiles for documentation when making changes.
+- Fixed randomized NPC weapon reinforcement scaling so unique +5 weapons map correctly to normal +15 weapons and vice versa. (@RSRFIPO)
+- Linked randomized weapon loadouts across NPC variants, matching armor variant behavior while keeping Kirk invasions unlinked for more variation. (@RSRFIPO)
+- Documented NPC IDs in weapon category profiles for documentation when making changes. (@RSRFIPO)
 
 1.0.3
-- Expanded the NPC weapon randomization pools using a curated weapon and shield list.
-- Added NPC specific weapon category profiles so each NPC can roll from curated weapon categories instead of a single global pool.
-- Refactored NPC weapon category/profile logic out of chr_setup.py into dedicated NPC weapon modules.
-- NPC melee weapon randomization now respects each NPC’s assigned weapon profile.
-- NPC weapon candidates are filtered by the NPC’s STR/DEX/INT/FTH requirements before assignment.
-- Greatbows are excluded from NPC weapon randomization because NPC bow users do not have great arrow ammo.
+- Expanded the NPC weapon randomization pools using a curated weapon and shield list. (@RSRFIPO)
+- Added NPC specific weapon category profiles so each NPC can roll from curated weapon categories instead of a single global pool. (@RSRFIPO)
+- Refactored NPC weapon category/profile logic out of chr_setup.py into dedicated NPC weapon modules. (@RSRFIPO)
+- NPC melee weapon randomization now respects each NPC’s assigned weapon profile. (@RSRFIPO)
+- NPC weapon candidates are filtered by the NPC’s STR/DEX/INT/FTH requirements before assignment. (@RSRFIPO)
+- Greatbows are excluded from NPC weapon randomization because NPC bow users do not have great arrow ammo. (@RSRFIPO)
 
 1.0.2
-- Update version/changelog to 1.0.2
-- Fixed PTDE `menu.msgbnd` parsing for archives with legacy encoded filenames.
-- Randomized starting stats warning now only appears for Dark Souls: Remastered.
-- Cleaned up the GUI layout and option hover behavior.
+- Update version/changelog to 1.0.2 (@RSRFIPO)
+- Fixed PTDE `menu.msgbnd` parsing for archives with legacy encoded filenames. (@RSRFIPO)
+- Randomized starting stats warning now only appears for Dark Souls: Remastered. (@RSRFIPO)
+- Cleaned up the GUI layout and option hover behavior. (@RSRFIPO)
 
 1.0.1
-- Added `Randomize Starting Stats` option.
-- Starting stats are randomized from 8 to 15 while preserving each class's vanilla stat total.
-- Deprived is left unchanged.
-- Added an online-ban warning when enabling randomized starting stats.
+- Added `Randomize Starting Stats` option. (@RSRFIPO)
+- Starting stats are randomized from 8 to 15 while preserving each class's vanilla stat total. (@RSRFIPO)
+- Deprived is left unchanged. (@RSRFIPO)
+- Added an online-ban warning when enabling randomized starting stats. (@RSRFIPO)
 
 1.0.0
 - Bumped version to 1.0.0.
-- Added dark mode support to the GUI.
-- Added `Randomize Starting Gifts` option.
-- Added curated starting gift pools for non-ring gifts and ring gifts.
-- Added randomized starting gift output to seed info.
-- Added menu text updates so randomized gifts show correct names and descriptions in character creation.
-- Reordered GUI options so `Randomize Starting Gifts` appears above `Fashion Souls`.
-- Reordered option descriptions to match the GUI layout.
-- Expanded the GUI description area to reduce hover text cutoff.
-- Starting gift randomization now restores game/menu files from backups before each export, preventing old randomized gift data from leaking into later seeds.
-- Curated gift names/descriptions to fit the Dark Souls character creation UI.
-- Fixed dropdowns allowing typed/erased input by making them read-only.
-- Fixed dropdown text remaining selected after choosing an option.
-- Improved light theme combobox/dropdown border visibility.
-- Fixed starting gifts not reverting to vanilla when the option was unchecked after a randomized gift run.
-- Fixed menu backup handling that previously contained a no-op self-move.
+- Added dark mode support to the GUI. (@RSRFIPO)
+- Added `Randomize Starting Gifts` option. (@RSRFIPO)
+- Added curated starting gift pools for non-ring gifts and ring gifts. (@RSRFIPO)
+- Added randomized starting gift output to seed info. (@RSRFIPO)
+- Added menu text updates so randomized gifts show correct names and descriptions in character creation. (@RSRFIPO)
+- Reordered GUI options so `Randomize Starting Gifts` appears above `Fashion Souls`. (@RSRFIPO)
+- Reordered option descriptions to match the GUI layout. (@RSRFIPO)
+- Expanded the GUI description area to reduce hover text cutoff. (@RSRFIPO)
+- Starting gift randomization now restores game/menu files from backups before each export, preventing old randomized gift data from leaking into later seeds. (@RSRFIPO)
+- Curated gift names/descriptions to fit the Dark Souls character creation UI. (@RSRFIPO)
+- Fixed dropdowns allowing typed/erased input by making them read-only. (@RSRFIPO)
+- Fixed dropdown text remaining selected after choosing an option. (@RSRFIPO)
+- Improved light theme combobox/dropdown border visibility. (@RSRFIPO)
+- Fixed starting gifts not reverting to vanilla when the option was unchecked after a randomized gift run. (@RSRFIPO)
+- Fixed menu backup handling that previously contained a no-op self-move. (@RSRFIPO)
 
-0.9.3
-- Replaced the old Save Settings as Default checkbox with a Save Defaults button that saves immediately.
-- Adjusted the GUI layout to reduce unused space and make option ordering clearer.
-- Reordered and polished randomizer option descriptions so they match the GUI layout.
-- Increased the description area height so all option descriptions are visible.
+0.9.3 
+- Replaced the old Save Settings as Default checkbox with a Save Defaults button that saves immediately. (@RSRFIPO)
+- Adjusted the GUI layout to reduce unused space and make option ordering clearer. (@RSRFIPO)
+- Reordered and polished randomizer option descriptions so they match the GUI layout. (@RSRFIPO)
+- Increased the description area height so all option descriptions are visible. (@RSRFIPO)
 
 0.9.2
-- Added selectable chance options for Transposed boss souls: 10%, 25%, 50%, or 75%.
-- Added selectable chance options for Eager Smiths: 5%, 15%, or 25%.
-- Fixed a bug where Write Seed Cheatsheet could generate info for a newly rerolled seed instead of the seed currently shown.
+- Added selectable chance options for Transposed boss souls: 10%, 25%, 50%, or 75%. (@RSRFIPO)
+- Added selectable chance options for Eager Smiths: 5%, 15%, or 25%. (@RSRFIPO)
+- Fixed a bug where Write Seed Cheatsheet could generate info for a newly rerolled seed instead of the seed currently shown. (@RSRFIPO)
 
 0.9.0
-- Added the Reroll Seed Each Run option, no need to clear the seed from the text box to get a new seed going before scrambling items.
-- Added NPC Weapon Mixup, which randomizes NPC weapons, shields, catalysts, and talismans within the NPCs stats data.
+- Added the Reroll Seed Each Run option, no need to clear the seed from the text box to get a new seed going before scrambling items. (@RSRFIPO)
+- Added NPC Weapon Mixup, which randomizes NPC weapons, shields, catalysts, and talismans within the NPCs stats data. (@RSRFIPO)
 
 0.8.1
 - When searching for Dark Souls game files to randomize, stop searching the list after it is found.  This prioritizes the relative path, meaning if you put the randomizer EXE in the same folder as the Dark Souls folder you want to randomize it will not accidentally grab another folder on the machine if you have several Dark Souls installed. (@Primogenitor33)
