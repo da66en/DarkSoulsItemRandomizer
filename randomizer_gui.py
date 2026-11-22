@@ -239,26 +239,18 @@ class MainGUI:
         self.seed_entry.grid(row=0, column=1, columnspan=2, ipady=2, ipadx=1, padx=2, sticky='EW')
         self.reroll_seed = tk.BooleanVar()
         self.reroll_seed.set(init_options.getboolean("reroll_seed_each_run", fallback=False))
-        self.reroll_seed_check = tk.Checkbutton(self.root, text="Reroll seed each run",
-         variable=self.reroll_seed, onvalue=True, offvalue=False, padx=2)
-        self.reroll_seed_check.grid(row=0, column=3, padx=2, sticky='W')
         self.top_button_frame = tk.Frame(self.root)
-        self.top_button_frame.grid(row=0, column=4, padx=2, sticky='W')
-        self.normalize_button = tk.Button(self.top_button_frame, text="Revert to vanilla",
-         padx=2, pady=2, command=self.normalize_game)
-        self.normalize_button.grid(row=0, column=0, padx=2, sticky='W')
-        self.delete_saves_button = tk.Button(self.top_button_frame, text="Delete Saves",
-         padx=2, pady=2, command=self.delete_save_files)
-        self.delete_saves_button.grid(row=0, column=1, padx=2, sticky='W')
-        self.save_options_button = tk.Button(self.top_button_frame, text="Save Defaults",
-         padx=2, pady=2, command=self.save_current_options)
-        self.save_options_button.grid(row=0, column=2, padx=2, sticky='W')
+        self.top_button_frame.grid(row=0, column=3, padx=2, sticky='EW')
+        self.top_button_frame.columnconfigure(1, weight=1)
+        self.reroll_seed_check = tk.Checkbutton(self.top_button_frame, text="Reroll seed each run",
+         variable=self.reroll_seed, onvalue=True, offvalue=False, padx=2)
+        self.reroll_seed_check.grid(row=0, column=0, sticky='W')
         self.dark_mode_check = tk.Checkbutton(self.top_button_frame, text="Dark mode",
          variable=self.dark_mode, onvalue=True, offvalue=False, padx=2, command=self.apply_theme)
-        self.dark_mode_check.grid(row=0, column=3, padx=2, sticky='W')
+        self.dark_mode_check.grid(row=0, column=2, padx=2, sticky='E')
         self.sellout_button = tk.Button(self.top_button_frame, text="?", bg="pale goldenrod",
          padx=2, pady=2, command=self.lift_sellout_area)
-        self.sellout_button.grid(row=0, column=4, padx=2, sticky='W')
+        self.sellout_button.grid(row=0, column=3, padx=2, sticky='E')
         
         tk.Label(self.root, text="Dark Souls Game Version:").grid(row=1, column=0, columnspan=2, sticky='W', padx=2, ipady=1)
         self.game_version = tk.StringVar()
@@ -274,7 +266,7 @@ class MainGUI:
         self.game_version_menu.config(width=30)
         self.game_version_menu.grid(row=1, column=2, sticky='EW', padx=2)
         
-        self.msg_area = tk.Text(self.root, width=76, height=30,
+        self.msg_area = tk.Text(self.root, width=76, height=27,
                                 state="disabled", background=self.root.cget('background'), wrap="word")
         self.msg_area.grid(row=2, column=0, columnspan=3, rowspan=14, padx=2, pady=2, sticky='NS')
         self.msg_quit_button = tk.Button(self.root, text="Quit", command=self.quit_button)
@@ -283,11 +275,20 @@ class MainGUI:
         self.msg_continue_button.grid(row=7, column=1, columnspan=2, rowspan=2)
         self.back_button = tk.Button(self.root, text="Back", command=self.back_button)
         self.back_button.grid(row=7, column=1, columnspan=2, rowspan=2)
-        self.desc_area = tk.Text(self.root, width=76, height=30, state="disabled", background=self.root.cget('background'), wrap="word")
+        self.desc_area = tk.Text(self.root, width=76, height=27, state="disabled", background=self.root.cget('background'), wrap="word")
         self.desc_area.grid(row=2, column=0, columnspan=3, rowspan=14, padx=2, pady=2)
         
-        self.diff_frame = tk.LabelFrame(text="Difficulty:", bd=0)
-        self.diff_frame.grid(row=2, column=3, sticky='NS', padx=2)
+        # Settings panel: two independently stacked columns, so neither stretches
+        # to match the grid rows of the description text box.
+        self.options_frame = tk.Frame(self.root)
+        self.options_frame.grid(row=2, column=3, rowspan=10, sticky='NW', padx=2)
+        self.options_left = tk.Frame(self.options_frame)
+        self.options_left.grid(row=0, column=0, sticky='NW')
+        self.options_right = tk.Frame(self.options_frame)
+        self.options_right.grid(row=0, column=1, sticky='NW', padx=(12, 0))
+
+        self.diff_frame = tk.LabelFrame(self.options_left, text="Difficulty:", bd=0)
+        self.diff_frame.grid(row=0, column=0, sticky='W', pady=2)
         #--
         self.diff = tk.IntVar()
         self.diff_as_string = tk.StringVar()
@@ -305,8 +306,8 @@ class MainGUI:
         self.setup_hover_events(self.gui_diff, {"diff": None}, no_emph = True)
        
         
-        self.key_diff_frame = tk.LabelFrame(text="Key Placement:", bd=0)
-        self.key_diff_frame.grid(row=3, column=3, sticky='NS', padx=2)
+        self.key_diff_frame = tk.LabelFrame(self.options_left, text="Key Placement:", bd=0)
+        self.key_diff_frame.grid(row=1, column=0, sticky='W', pady=2)
         #--
         self.key_diff = tk.IntVar()
         self.key_diff_as_string = tk.StringVar()
@@ -323,8 +324,8 @@ class MainGUI:
         self.gui_key_diff.grid(row=0, column=0, sticky='W')
         self.setup_hover_events(self.gui_key_diff, {"key_diff": None}, no_emph = True)
 
-        self.soul_frame = tk.LabelFrame(text="Soul Items:", bd=0)
-        self.soul_frame.grid(row=4, column=3, sticky='NS', padx=2, pady=2)
+        self.soul_frame = tk.LabelFrame(self.options_left, text="Soul Items:", bd=0)
+        self.soul_frame.grid(row=2, column=0, sticky='W', pady=2)
         #--
         self.soul_diff = tk.IntVar()
         self.soul_diff_as_string = tk.StringVar()
@@ -355,8 +356,8 @@ class MainGUI:
         self.gui_boss_soul_transpose_chance.grid(row=1, column=0, sticky='W')
         self.setup_hover_events(self.gui_boss_soul_transpose_chance, {"boss_soul_transpose_chance": None}, no_emph = True)
 
-        self.use_lordvessel_frame = tk.LabelFrame(text="Lordvessel:", bd=0)
-        self.use_lordvessel_frame.grid(row=5, column=3, sticky='NS', padx=2, pady=2)
+        self.use_lordvessel_frame = tk.LabelFrame(self.options_left, text="Lordvessel:", bd=0)
+        self.use_lordvessel_frame.grid(row=3, column=0, sticky='W', pady=2)
         #--
         self.use_lordvessel = tk.StringVar()
         self.use_lordvessel.set(rngopts.RandOptLordvesselLocation.verify(ini_parser.get_option_value(init_options, "use_lordvessel")))
@@ -370,8 +371,8 @@ class MainGUI:
         self.gui_lordvessel.bind("<<ComboboxSelected>>", self.combobox_selected)
         self.setup_hover_events(self.gui_lordvessel, {"use_lv": None}, no_emph = True)
 
-        self.start_items_frame = tk.LabelFrame(text="Starting Items:", bd=0)  #wxy
-        self.start_items_frame.grid(row=2, column=4, sticky='NS', padx=2)
+        self.start_items_frame = tk.LabelFrame(self.options_right, text="Starting Items:", bd=0)  #wxy
+        self.start_items_frame.grid(row=0, column=0, sticky='W', pady=2)
         #--
         self.start_items_diff = tk.IntVar()
         self.start_items_diff_as_string = tk.StringVar()
@@ -388,8 +389,8 @@ class MainGUI:
         self.gui_start_items_diff.grid(row=0, column=0, sticky='W')
         self.setup_hover_events(self.gui_start_items_diff, {"start_items": None}, no_emph = True)
         
-        self.misc_flags_frame = tk.LabelFrame(text="Other Settings:", bd=0)  #wxy
-        self.misc_flags_frame.grid(row=3, column=4, rowspan=8, sticky='NS', padx=2)
+        self.misc_flags_frame = tk.LabelFrame(self.options_right, text="Other Settings:", bd=0)  #wxy
+        self.misc_flags_frame.grid(row=1, column=0, sticky='W', pady=2)
         #--
         self.randomize_starting_gifts = tk.BooleanVar()
         self.randomize_starting_gifts.set(init_options.getboolean("randomize_starting_gifts", fallback=False))
@@ -487,12 +488,27 @@ class MainGUI:
         self.npc_weapons_check.grid(row=4, column=0, sticky='W')
         self.setup_hover_events(self.npc_weapons_check, {"npc_weapons": None}, no_emph=True)
 
-        self.export_button = tk.Button(self.root, text="Scramble Items &\nExport to GameParam", 
+        self.actions_frame = tk.Frame(self.root)
+        self.actions_frame.grid(row=12, column=3, rowspan=4, sticky='SEW', padx=2, pady=2)
+        for col in range(3):
+            self.actions_frame.columnconfigure(col, weight=1, uniform="actions")
+
+        self.export_button = tk.Button(self.actions_frame, text="Scramble Items &\nExport to GameParam",
          padx=10, pady=10, command=self.export_to_gameparam)
-        self.export_button.grid(row=11, rowspan=3, column=4, padx=2, sticky='EW')
-        
-        self.cheat_button = tk.Button(self.root, text="Write Seed Cheatsheet", command=self.export_seed_info)
-        self.cheat_button.grid(row=14, rowspan=1, column=4, sticky='EW', padx=2, pady=2)
+        self.export_button.grid(row=0, column=0, columnspan=3, padx=2, sticky='EW')
+
+        self.cheat_button = tk.Button(self.actions_frame, text="Write Seed Cheatsheet", command=self.export_seed_info)
+        self.cheat_button.grid(row=1, column=0, columnspan=3, sticky='EW', padx=2, pady=(4, 0))
+
+        self.normalize_button = tk.Button(self.actions_frame, text="Revert to vanilla",
+         padx=2, pady=2, command=self.normalize_game)
+        self.normalize_button.grid(row=2, column=0, padx=2, pady=(4, 0), sticky='EW')
+        self.delete_saves_button = tk.Button(self.actions_frame, text="Delete Saves",
+         padx=2, pady=2, command=self.delete_save_files)
+        self.delete_saves_button.grid(row=2, column=1, padx=2, pady=(4, 0), sticky='EW')
+        self.save_options_button = tk.Button(self.actions_frame, text="Save Defaults",
+         padx=2, pady=2, command=self.save_current_options)
+        self.save_options_button.grid(row=2, column=2, padx=2, pady=(4, 0), sticky='EW')
 
         # Settings sync popup menu
         self.popup_menu = tk.Menu(self.root, tearoff=0)
