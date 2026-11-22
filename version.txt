@@ -1,7 +1,7 @@
 1.0.5
 - When randomizing player stats, use minimum attunement of 10 for casting classes. (@da66en)
 - Added button to delete all save files. (@da66en)
-- Tighted up the GUI by removing some white-space. (@da66en)
+- Tightened up the GUI by removing some white-space. (@da66en)
 
 1.0.4
 - Fixed randomized NPC weapon reinforcement scaling so unique +5 weapons map correctly to normal +15 weapons and vice versa. (@RSRFIPO)
